@@ -166,7 +166,15 @@
         '<span class="kicker">' + t('home.activity').toUpperCase() + '</span>' +
         '<h3>' + t('home.activity.title') + '</h3>' +
         '<p class="muted">' + t('home.activity.empty') + '</p>' +
-        '<div class="activity-item">🛡️ ' + t('adm.title') + ' · ' + t('common.demo') + '</div>' +
+        (function () {
+          var ev = [];
+          state.orders.slice(0, 6).forEach(function (o) { ev.push({ t: o.created_at, icon: '🧾', text: t('nav.orders') + ' · ' + (o.code || '') + ' · ' + (o.customer_name || '') }); });
+          state.products.slice(0, 6).forEach(function (p) { ev.push({ t: p.created_at, icon: '📦', text: (p.name || '') }); });
+          ev.sort(function (a, b) { return new Date(b.t) - new Date(a.t); });
+          ev = ev.slice(0, 5);
+          if (!ev.length) return '<div class="activity-item muted">' + t('common.none') + '</div>';
+          return ev.map(function (e) { return '<div class="activity-item">' + e.icon + ' ' + esc(e.text) + ' <small class="muted">' + CW.api.dateTime(e.t) + '</small></div>'; }).join('');
+        })() +
       '</section>';
 
     bindGo(view);
