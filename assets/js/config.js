@@ -12,8 +12,8 @@
     appName: 'Catalogo Wha',
 
     // --- Supabase (déjalas vacías para MODO DEMO) -------------------------
-    SUPABASE_URL: 'https://bjcrmhytinbwibhnsmiw.supabase.co',        // p.ej. 'https://xxxxxxxx.supabase.co'
-    SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqY3JtaHl0aW5id2liaG5zbWl3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIyNzcxNjgsImV4cCI6MjEwNzg1MzE2OH0.NJHLwysMoET_XtFum-J033HcYR46xtUVK_20mulo5sQ',   // p.ej. 'eyJhbGciOi...'
+    SUPABASE_URL: 'https://wbmpzbshifrvfyxzediz.supabase.co',        // p.ej. 'https://xxxxxxxx.supabase.co'
+    SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndibXB6YnNoaWZydmZ5eHplZGl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIzMjc1MzQsImV4cCI6MjEwNzkwMzUzNH0.iC8PYTlz6SFtHZ27mB1EFcOrpiwAgwkT4pLmTLmEn9U',   // p.ej. 'eyJhbGciOi...'
 
     // --- Dominio público (solo el host, sin https:// ni barra final) ------
     // Si está vacío se detecta automáticamente del dominio actual.

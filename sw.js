@@ -1,7 +1,7 @@
 /* Catalogo Wha · Service Worker
    Versión de caché única; solo se consulta la caché actual para no servir
    archivos antiguos. HTML network-first, estáticos cache-first. */
-const CACHE_VERSION = 'cw-v3';
+const CACHE_VERSION = 'cw-v4';
 const CACHE_NAME = 'catalogo-wha-' + CACHE_VERSION;
 
 const PRECACHE = [
@@ -11,14 +11,14 @@ const PRECACHE = [
   './dashboard.html',
   './catalogo.html',
   './manifest.webmanifest',
-  './assets/css/styles.css?v=3',
-  './assets/js/config.js?v=3',
-  './assets/js/i18n.js?v=3',
-  './assets/js/store.js?v=3',
-  './assets/js/common.js?v=3',
-  './assets/js/auth.js?v=3',
-  './assets/js/dashboard.js?v=3',
-  './assets/js/catalog.js?v=3'
+  './assets/css/styles.css?v=4',
+  './assets/js/config.js?v=4',
+  './assets/js/i18n.js?v=4',
+  './assets/js/store.js?v=4',
+  './assets/js/common.js?v=4',
+  './assets/js/auth.js?v=4',
+  './assets/js/dashboard.js?v=4',
+  './assets/js/catalog.js?v=4'
 ];
 
 self.addEventListener('install', (e) => {
