@@ -1,0 +1,410 @@
+/* ==========================================================================
+   Catalogo Wha · catalog.js
+   Catálogo público: filtros, tarjetas, ficha, carrito y pedido por WhatsApp.
+   ========================================================================== */
+(function (window, document) {
+  'use strict';
+  var CW = window.CW;
+  var $ = CW.$, $$ = CW.$$, esc = CW.esc, money = CW.money;
+  var t = function (k, v) { return CW.i18n.t(k, v); };
+
+  var S = {
+    biz: null, cats: [], products: [],
+    filterType: 'all', filterCatP: '', filterCatS: '', sort: 'reco', q: '',
+    cart: [] // {id, name, price, qty, kind, image}
+  };
+
+  function param(k) { return new URLSearchParams(location.search).get(k); }
+
+  // ---- Datos ----------------------------------------------------------
+  function demoBiz() {
+    var b = {
+      id: 'demo', name: 'Marmol', slug: 'demo', description: 'Todo para tu hogar, con entrega a domicilio.',
+      whatsapp: '212600112233', country: 'MA', currency: 'MAD', brand_color: '#5B1A80', logo_url: '',
+      hero_enabled: true, hero_title: 'Todo para tu hogar', hero_desc: 'Productos y servicios seleccionados para ti.',
+      hero_image: '', delivery: 'custom', delivery_fee: 25, delivery_time: '24-48 h',
+      payments: ['Efectivo', 'Transferencia bancaria'], open_time: '09:00', close_time: '18:00',
+      slot_minutes: 30, work_days: [1, 2, 3, 4, 5, 6], published: true
+    };
+    var cats = [
+      { id: 'c1', business_id: 'demo', name: 'Ropa', slug: 'ropa', kind: 'product', sort_order: 1 },
+      { id: 'c2', business_id: 'demo', name: 'Abarrotes', slug: 'abarrotes', kind: 'product', sort_order: 2 },
+      { id: 'c3', business_id: 'demo', name: 'Cortes', slug: 'cortes', kind: 'service', sort_order: 3 },
+      { id: 'c4', business_id: 'demo', name: 'Reparaciones', slug: 'reparaciones', kind: 'service', sort_order: 4 }
+    ];
+    var products = [
+      { id: 'p1', business_id: 'demo', category_id: 'c1', name: 'Camiseta', description: 'Camiseta 100% algodón peinado. Disponible en varias tallas.', price: 100, promo_price: 60, images: [], kind: 'product', active: true, sort_order: 1, created_at: '2026-01-01' },
+      { id: 'p2', business_id: 'demo', category_id: 'c2', name: 'Arroz extra 5 kg', description: 'Arroz de grano largo.', price: 45, images: [], kind: 'product', active: true, sort_order: 2, created_at: '2026-01-02' },
+      { id: 'p3', business_id: 'demo', category_id: 'c3', name: 'Corte de pelo', description: 'Corte clásico con lavado.', price: 0, images: [], kind: 'service', duration: '45 minutos', modality: 'En el local', bookable: true, active: true, sort_order: 3, created_at: '2026-01-03' },
+      { id: 'p4', business_id: 'demo', category_id: 'c4', name: 'Reparación de electrodoméstico', description: 'Diagnóstico y reparación.', price: 150, images: [], kind: 'service', duration: '2 horas', modality: 'A domicilio', bookable: false, active: true, sort_order: 4, created_at: '2026-01-04' }
+    ];
+    return { biz: b, cats: cats, products: products };
+  }
+
+  function load() {
+    var slug = param('b') || param('biz');
+    return CW.store.init().then(function () {
+      if (!slug) return null;
+      if (slug === 'demo') {
+        // Si existe un negocio real "demo", úsalo; si no, datos de ejemplo.
+        return CW.store.getBusinessBySlug('demo').then(function (b) { return b || null; });
+      }
+      return CW.store.getBusinessBySlug(slug);
+    }).then(function (biz) {
+      if (!biz && slug === 'demo') {
+        var d = demoBiz(); S.biz = d.biz; S.cats = d.cats; S.products = d.products;
+        return;
+      }
+      if (!biz || (!biz.published && !CW.isDemo)) { S.biz = null; return; }
+      S.biz = biz;
+      return Promise.all([CW.store.listCategories(biz.id), CW.store.listProducts(biz.id, { activeOnly: true })])
+        .then(function (r) { S.cats = r[0]; S.products = r[1]; });
+    });
+  }
+
+  // ---- Render principal ----------------------------------------------
+  function render() {
+    var root = $('[data-catalog-root]');
+    if (!S.biz) {
+      root.innerHTML = '<div class="wrap empty-state big"><div class="es-icon">🔍</div><b>' + t('cat.public.notfound') + '</b><p>' + t('cat.public.notfound.desc') + '</p><a class="btn primary" href="' + CW.url('index.html') + '">Catalogo Wha</a></div>';
+      return;
+    }
+    var b = S.biz;
+    document.title = (b.seo_title || b.name) + ' · Catalogo Wha';
+    document.querySelector('meta[name=description]').setAttribute('content', b.seo_description || b.description || '');
+    document.documentElement.style.setProperty('--brand', b.brand_color || '#5B1A80');
+    document.documentElement.style.setProperty('--brand-soft', hexSoft(b.brand_color || '#5B1A80'));
+
+    // Cabecera
+    var brand = $('[data-cat-brand]');
+    brand.innerHTML =
+      (b.logo_url ? '<img src="' + esc(b.logo_url) + '" alt="" class="cat-logo">' : '<span class="cat-logo ph" style="background:' + esc(b.brand_color) + '">' + esc((b.name || 'M').charAt(0)) + '</span>') +
+      '<div><b>' + esc(b.name) + '</b>' + (b.description ? '<small>' + esc(b.description) + '</small>' : '') + '</div>';
+    var wa = $('[data-wa-header]');
+    if (b.whatsapp) { wa.href = CW.api.waLink(b.whatsapp, 'Hola ' + b.name + ', quiero hacer un pedido.'); } else { wa.hidden = true; }
+
+    // Hero
+    var hero = '';
+    if (b.hero_enabled) {
+      hero = '<section class="cat-hero" style="' + (b.hero_image ? 'background-image:linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),url(' + esc(b.hero_image) + ')' : '') + '">' +
+        '<div class="wrap"><h1>' + esc(b.hero_title || b.name) + '</h1>' +
+        (b.hero_desc ? '<p>' + esc(b.hero_desc) + '</p>' : '') + '</div></section>';
+    }
+
+    // Info entrega / pagos
+    var info = '';
+    var hasDelivery = b.delivery === 'custom' || b.delivery_time || b.delivery_notes || Number(b.delivery_fee) > 0;
+    var hasPays = (b.payments || []).length;
+    if (hasDelivery || hasPays) {
+      info = '<section class="cat-info"><div class="wrap cat-info-grid">' +
+        (hasDelivery ? '<div class="info-card"><span>🚚</span><div><b>' + t('cat.public.delivery') + '</b>' +
+          '<small>' + (Number(b.delivery_fee) > 0 ? t('cat.public.fee') + ': ' + money(b.delivery_fee, b.currency) : '') +
+          (b.delivery_time ? ' · ' + esc(b.delivery_time) : '') + (b.delivery_notes ? ' · ' + esc(b.delivery_notes) : '') + '</small></div></div>' : '') +
+        (hasPays ? '<div class="info-card"><span>💳</span><div><b>' + t('cat.public.payment') + '</b><small>' + esc((b.payments || []).join(', ')) + '</small></div></div>' : '') +
+        '</div></section>';
+    }
+
+    root.innerHTML = hero + info +
+      '<div class="filter-bar-cat" data-filters>' + renderFilters() + '</div>' +
+      '<section class="wrap cat-grid" data-grid></section>' +
+      '<footer class="cat-footer"><div class="wrap">' + esc(b.name) + ' · Catalogo Wha</div></footer>';
+
+    bindFilters();
+    drawGrid();
+    updateCartUI();
+  }
+
+  function hexSoft(hex) {
+    try {
+      var h = hex.replace('#', '');
+      var r = parseInt(h.slice(0, 2), 16), g = parseInt(h.slice(2, 4), 16), bl = parseInt(h.slice(4, 6), 16);
+      return 'rgba(' + r + ',' + g + ',' + bl + ',0.10)';
+    } catch (e) { return 'rgba(91,26,128,.1)'; }
+  }
+
+  // ---- Filtros --------------------------------------------------------
+  function countInCat(catId) { return S.products.filter(function (p) { return p.category_id === catId; }).length; }
+
+  function renderFilters() {
+    var catP = S.cats.filter(function (c) { return c.kind !== 'service'; });
+    var catS = S.cats.filter(function (c) { return c.kind === 'service'; });
+    var showP = S.filterType !== 'service' && catP.length;
+    var showS = S.filterType !== 'product' && catS.length;
+    function opts(list, sel) {
+      return '<option value="">' + t('common.all') + '</option>' + list.map(function (c) {
+        return '<option value="' + c.id + '"' + (c.id === sel ? ' selected' : '') + '>' + esc(c.name) + ' (' + countInCat(c.id) + ')</option>';
+      }).join('');
+    }
+    return '<div class="wrap filter-inner">' +
+      '<div class="segmented" data-ftype>' +
+        '<button data-ft="all" class="' + (S.filterType === 'all' ? 'active' : '') + '">' + t('common.all') + '</button>' +
+        '<button data-ft="product" class="' + (S.filterType === 'product' ? 'active' : '') + '">' + t('cat.public.products') + '</button>' +
+        '<button data-ft="service" class="' + (S.filterType === 'service' ? 'active' : '') + '">' + t('cat.public.services') + '</button>' +
+      '</div>' +
+      (showP ? '<select data-fcatp>' + opts(catP, S.filterCatP) + '</select>' : '') +
+      (showS ? '<select data-fcats>' + opts(catS, S.filterCatS) + '</select>' : '') +
+      '<select data-fsort>' +
+        ['reco', 'priceasc', 'pricedesc', 'news'].map(function (k) {
+          return '<option value="' + k + '"' + (S.sort === k ? ' selected' : '') + '>' + t('cat.public.' + k) + '</option>';
+        }).join('') + '</select>' +
+      '<input class="search" data-fq placeholder="' + t('cat.public.search') + '" value="' + esc(S.q) + '">' +
+      '</div>';
+  }
+
+  function bindFilters() {
+    $$('[data-ft]').forEach(function (b) { b.addEventListener('click', function () { S.filterType = b.dataset.ft; S.filterCatP = ''; S.filterCatS = ''; rerenderFilters(); }); });
+    var fp = $('[data-fcatp]'); if (fp) fp.addEventListener('change', function () { S.filterCatP = fp.value; drawGrid(); });
+    var fs = $('[data-fcats]'); if (fs) fs.addEventListener('change', function () { S.filterCatS = fs.value; drawGrid(); });
+    var so = $('[data-fsort]'); if (so) so.addEventListener('change', function () { S.sort = so.value; drawGrid(); });
+    var q = $('[data-fq]'); if (q) q.addEventListener('input', function () { S.q = q.value; drawGrid(); });
+  }
+  function rerenderFilters() {
+    $('[data-filters]').innerHTML = renderFilters();
+    bindFilters();
+    drawGrid();
+  }
+
+  // ---- Tarjetas -------------------------------------------------------
+  function visible() {
+    var list = S.products.slice();
+    if (S.filterType === 'product') list = list.filter(function (p) { return p.kind !== 'service'; });
+    if (S.filterType === 'service') list = list.filter(function (p) { return p.kind === 'service'; });
+    if (S.filterCatP) list = list.filter(function (p) { return p.category_id === S.filterCatP; });
+    if (S.filterCatS) list = list.filter(function (p) { return p.category_id === S.filterCatS; });
+    if (S.q) { var q = S.q.toLowerCase(); list = list.filter(function (p) { return (p.name || '').toLowerCase().includes(q) || (p.description || '').toLowerCase().includes(q); }); }
+    if (S.sort === 'priceasc') list.sort(function (a, b) { return eff(a) - eff(b); });
+    else if (S.sort === 'pricedesc') list.sort(function (a, b) { return eff(b) - eff(a); });
+    else if (S.sort === 'news') list.sort(function (a, b) { return new Date(b.created_at) - new Date(a.created_at); });
+    else list.sort(function (a, b) { return (a.sort_order || 0) - (b.sort_order || 0); });
+    return list;
+  }
+  function eff(p) { return Number(p.promo_price) > 0 ? Number(p.promo_price) : Number(p.price || 0); }
+  function catOf(id) { return S.cats.find(function (c) { return c.id === id; }); }
+
+  function drawGrid() {
+    var list = visible();
+    var grid = $('[data-grid]');
+    if (!list.length) { grid.innerHTML = '<div class="empty-state"><div class="es-icon">📦</div><b>' + t('prod.empty') + '</b></div>'; return; }
+    grid.innerHTML = list.map(cardHTML).join('');
+    $$('[data-add]', grid).forEach(function (b) { b.addEventListener('click', function () { addToCart(b.dataset.add); }); });
+    $$('[data-detail]', grid).forEach(function (b) { b.addEventListener('click', function () { openDetail(b.dataset.detail); }); });
+  }
+
+  function cardHTML(p) {
+    var c = catOf(p.category_id);
+    var img = (p.images && p.images[0]) ? '<img src="' + esc(p.images[0]) + '" alt="' + esc(p.name) + '" loading="lazy">' : '<div class="ph-img">🖼️</div>';
+    var inCart = S.cart.find(function (x) { return x.id === p.id; });
+    var badge = p.kind === 'service' ? '<span class="card-chip top">🔧 ' + t('prod.type.service') + '</span>' : '';
+    var cat = c ? '<span class="card-chip bottom">' + esc(c.name) + '</span>' : '';
+    var lines = '';
+    if (p.kind === 'service') {
+      lines += '<div class="card-line">🏷️ ' + t('cat.public.category') + ': ' + esc(c ? c.name : '—') + '</div>';
+      lines += '<div class="card-line">💰 ' + t('common.price') + ': ' + (Number(p.price) > 0 ? money(p.price, S.biz.currency) : t('cat.public.consult')) + '</div>';
+      if (p.duration) lines += '<div class="card-line">⏱ ' + t('cat.public.duration') + ': ' + esc(p.duration) + '</div>';
+      if (p.modality) lines += '<div class="card-line">📍 ' + t('cat.public.modality') + ': ' + esc(p.modality) + '</div>';
+      lines += '<div class="card-line ok">✅ ' + t('cat.public.available') + '</div>';
+    } else {
+      lines += '<div class="card-line">🏷️ ' + t('cat.public.category') + ': ' + esc(c ? c.name : '—') + '</div>';
+      lines += '<div class="card-line">💰 ' + t('common.price') + ': ' + money(p.price, S.biz.currency) + '</div>';
+      if (Number(p.promo_price) > 0 && Number(p.promo_price) < Number(p.price)) {
+        lines += '<div class="card-line promo">🎁 ' + t('cat.public.offer') + ': ' + money(p.promo_price, S.biz.currency) + '</div>';
+        lines += '<div class="card-line save">✅ ' + t('cat.public.save') + ': ' + CW.api.pct(p.promo_price, p.price) + '%</div>';
+      }
+    }
+    var btn = p.kind === 'service' ? (p.bookable ? t('cat.public.book') : t('cat.public.request')) : t('cat.public.add');
+    return '<article class="item-card">' +
+      '<div class="item-media" data-detail="' + p.id + '">' + img + badge + cat + (inCart ? '<span class="in-cart">✕</span>' : '') + '</div>' +
+      '<div class="item-body"><h3>' + esc(p.name) + '</h3>' + lines +
+      '<div class="item-actions"><button class="btn primary small" data-add="' + p.id + '">' + btn + '</button>' +
+      '<button class="btn ghost small" data-detail="' + p.id + '">' + t('cat.public.details') + '</button></div></div></article>';
+  }
+
+  // ---- Ficha de detalle ----------------------------------------------
+  function openDetail(id) {
+    var p = S.products.find(function (x) { return x.id === id; }); if (!p) return;
+    if (S.biz.id !== 'demo') CW.store.incrementViews(p.id);
+    var c = catOf(p.category_id);
+    var imgs = (p.images && p.images.length) ? p.images : [null];
+    var m = CW.modal({
+      className: 'detail-modal',
+      title: p.name,
+      html:
+        '<div class="detail-grid">' +
+          '<div class="detail-gallery"><div class="dg-main" data-dg-main>' + (imgs[0] ? '<img src="' + esc(imgs[0]) + '">' : '<div class="ph-img big">🖼️</div>') + '</div>' +
+          (imgs.length > 1 ? '<div class="dg-thumbs">' + imgs.map(function (u, i) { return '<button data-dg="' + i + '" class="' + (i === 0 ? 'active' : '') + '">' + (u ? '<img src="' + esc(u) + '">' : '🖼️') + '</button>'; }).join('') + '</div>' : '') + '</div>' +
+          '<div class="detail-info"><span class="card-chip">' + (p.kind === 'service' ? '🔧 ' + t('prod.type.service') : '📦 ' + t('prod.type.product')) + (c ? ' · ' + esc(c.name) : '') + '</span>' +
+          '<h2>' + esc(p.name) + '</h2>' +
+          '<div class="detail-price">' + (Number(p.promo_price) > 0 && Number(p.promo_price) < Number(p.price) ?
+            '<b>' + money(p.promo_price, S.biz.currency) + '</b> <s>' + money(p.price, S.biz.currency) + '</s> <span class="tag warn">-' + CW.api.pct(p.promo_price, p.price) + '%</span>' :
+            (Number(p.price) > 0 ? '<b>' + money(p.price, S.biz.currency) + '</b>' : '<b>' + t('cat.public.consult') + '</b>')) + '</div>' +
+          '<ul class="detail-rows">' +
+            '<li>🏷️ ' + t('cat.public.category') + ': <b>' + esc(c ? c.name : '—') + '</b></li>' +
+            (p.duration ? '<li>⏱ ' + t('cat.public.duration') + ': <b>' + esc(p.duration) + '</b></li>' : '') +
+            (p.modality ? '<li>📍 ' + t('cat.public.modality') + ': <b>' + esc(p.modality) + '</b></li>' : '') +
+            (p.kind === 'service' ? '<li>✅ ' + t('cat.public.available') + '</li>' : '') +
+          '</ul>' +
+          (p.description ? '<p class="detail-desc">' + esc(p.description).replace(/\n/g, '<br>') + '</p>' : '') +
+          '<div class="detail-actions"><button class="btn primary" data-d-add="' + p.id + '">' + (p.kind === 'service' ? (p.bookable ? t('cat.public.book') : t('cat.public.request')) : t('cat.public.add')) + '</button>' +
+          '<button class="btn ghost" data-d-share="' + p.id + '">↗ ' + t('common.share') + '</button></div></div>' +
+        '</div>'
+    });
+    $$('[data-dg]', m.modal).forEach(function (b) {
+      b.addEventListener('click', function () {
+        var i = Number(b.dataset.dg);
+        $$('[data-dg]', m.modal).forEach(function (x) { x.classList.remove('active'); }); b.classList.add('active');
+        $('[data-dg-main]', m.modal).innerHTML = imgs[i] ? '<img src="' + esc(imgs[i]) + '">' : '<div class="ph-img big">🖼️</div>';
+      });
+    });
+    $('[data-d-add]', m.modal).addEventListener('click', function () { addToCart(p.id); m.close(); openCart(); });
+    $('[data-d-share]', m.modal).addEventListener('click', function () {
+      var txt = CW.api.shareItem(S.biz, Object.assign({ category_name: c ? c.name : '' }, p));
+      if (navigator.share) navigator.share({ title: p.name, text: txt }).catch(function () {});
+      else CW.api.copy(txt);
+    });
+  }
+
+  // ---- Carrito --------------------------------------------------------
+  function addToCart(id) {
+    var p = S.products.find(function (x) { return x.id === id; }); if (!p) return;
+    var it = S.cart.find(function (x) { return x.id === id; });
+    if (it) it.qty++;
+    else S.cart.push({ id: p.id, name: p.name, price: eff(p), qty: 1, kind: p.kind, image: (p.images && p.images[0]) || '', bookable: !!p.bookable, category_name: (catOf(p.category_id) || {}).name || '' });
+    CW.toast(t('common.add') + ': ' + p.name);
+    updateCartUI(); drawGrid();
+  }
+  function removeFromCart(id) { S.cart = S.cart.filter(function (x) { return x.id !== id; }); updateCartUI(); drawGrid(); }
+  function setQty(id, d) {
+    var it = S.cart.find(function (x) { return x.id === id; }); if (!it) return;
+    it.qty += d; if (it.qty <= 0) removeFromCart(id); else { updateCartUI(); }
+  }
+  function cartCount() { return S.cart.reduce(function (s, x) { return s + x.qty; }, 0); }
+  function subtotal() { return S.cart.reduce(function (s, x) { return s + x.price * x.qty; }, 0); }
+
+  function updateCartUI() {
+    var fab = $('[data-cart-fab]');
+    $('[data-cart-count]').textContent = cartCount();
+    fab.hidden = cartCount() === 0;
+    if (!$('[data-cart]').hidden) drawCart();
+  }
+
+  function openCart() {
+    $('[data-cart]').hidden = false; $('[data-cart-overlay]').hidden = false;
+    document.body.classList.add('cart-open');
+    requestAnimationFrame(function () { $('[data-cart]').classList.add('show'); });
+    drawCart();
+  }
+  function closeCart() {
+    $('[data-cart]').classList.remove('show');
+    setTimeout(function () { $('[data-cart]').hidden = true; $('[data-cart-overlay]').hidden = true; document.body.classList.remove('cart-open'); }, 200);
+  }
+
+  function drawCart() {
+    var body = $('[data-cart-body]');
+    var foot = $('[data-cart-foot]');
+    // Conserva lo que el cliente ya escribió antes de re-renderizar.
+    var prev = {};
+    ['name', 'phone', 'address', 'city', 'note', 'date'].forEach(function (k) {
+      var el = $('[data-c-' + k + ']', body); if (el) prev[k] = el.value;
+    });
+    if (!S.cart.length) {
+      body.innerHTML = '<div class="empty-state"><div class="es-icon">🛒</div><b>' + t('cat.public.emptycart') + '</b></div>';
+      foot.innerHTML = '';
+      return;
+    }
+    var hasBookable = S.cart.some(function (x) { return x.bookable; });
+    var fee = S.biz.delivery === 'custom' ? Number(S.biz.delivery_fee || 0) : 0;
+    var total = subtotal() + fee;
+    body.innerHTML =
+      '<ul class="cart-items">' + S.cart.map(function (it) {
+        return '<li class="cart-item">' +
+          '<div class="ci-thumb">' + (it.image ? '<img src="' + esc(it.image) + '">' : '🖼️') + '</div>' +
+          '<div class="ci-info"><b>' + esc(it.name) + '</b>' + (it.kind === 'service' ? '<small>' + t('prod.type.service') + '</small>' : '') +
+          '<div class="qty"><button data-qm="' + it.id + '">−</button><span>' + it.qty + '</span><button data-qp="' + it.id + '">+</button></div></div>' +
+          '<div class="ci-right"><b>' + (it.price > 0 ? money(it.price * it.qty, S.biz.currency) : t('cat.public.consult')) + '</b>' +
+          '<button class="icon-btn" data-rm="' + it.id + '">✕</button></div></li>';
+      }).join('') + '</ul>' +
+      '<div class="cart-form">' +
+        '<h4>' + t('cat.public.yourdata') + '</h4>' +
+        '<div class="two-col-inline">' +
+          '<label class="field"><span>' + t('common.name') + ' *</span><input data-c-name></label>' +
+          '<label class="field"><span>' + t('common.phone') + ' *</span><input data-c-phone></label>' +
+        '</div>' +
+        '<div class="two-col-inline">' +
+          '<label class="field"><span>' + t('cat.public.address') + '</span><input data-c-address></label>' +
+          '<label class="field"><span>' + t('cat.public.city') + '</span><input data-c-city></label>' +
+        '</div>' +
+        '<label class="field"><span>' + t('cat.public.note') + '</span><textarea data-c-note rows="2"></textarea></label>' +
+        (hasBookable ? '<div class="appt-block"><h4>' + t('cat.public.appt') + '</h4><div class="two-col-inline">' +
+          '<label class="field"><span>' + t('cat.public.date') + '</span><input type="date" data-c-date></label>' +
+          '<label class="field"><span>' + t('cat.public.time') + '</span><select data-c-time></select></label></div>' +
+          '<small class="muted" data-c-closed hidden>' + t('cat.public.closed') + '</small></div>' : '') +
+      '</div>';
+
+    foot.innerHTML =
+      '<div class="cart-totals">' +
+        (fee > 0 ? '<div><span>' + t('cat.public.subtotal') + '</span><b>' + money(subtotal(), S.biz.currency) + '</b></div>' +
+          '<div><span>' + t('cat.public.fee') + '</span><b>+' + money(fee, S.biz.currency) + '</b></div>' : '') +
+        '<div class="grand"><span>' + t('cat.public.total') + '</span><b>' + money(total, S.biz.currency) + '</b></div>' +
+      '</div>' +
+      '<button class="btn primary block" data-send>💬 ' + t('cat.public.send') + '</button>';
+
+    $$('[data-qm]', body).forEach(function (b) { b.addEventListener('click', function () { setQty(b.dataset.qm, -1); }); });
+    $$('[data-qp]', body).forEach(function (b) { b.addEventListener('click', function () { setQty(b.dataset.qp, 1); }); });
+    $$('[data-rm]', body).forEach(function (b) { b.addEventListener('click', function () { removeFromCart(b.dataset.rm); }); });
+
+    // Restaura los datos del cliente.
+    ['name', 'phone', 'address', 'city', 'note', 'date'].forEach(function (k) {
+      var el = $('[data-c-' + k + ']', body); if (el && prev[k] != null) el.value = prev[k];
+    });
+
+    if (hasBookable) {
+      var dateEl = $('[data-c-date]', body), timeEl = $('[data-c-time]', body);
+      function refreshSlots() {
+        var slots = CW.api.timeSlots(S.biz, dateEl.value);
+        $('[data-c-closed]', body).hidden = !dateEl.value || slots.length > 0;
+        timeEl.innerHTML = slots.length ? slots.map(function (s) { return '<option>' + s + '</option>'; }).join('') : '<option>—</option>';
+      }
+      dateEl.addEventListener('change', refreshSlots);
+      var today = new Date().toISOString().slice(0, 10); dateEl.min = today;
+      dateEl.value = prev.date || today;
+      refreshSlots();
+    }
+
+    $('[data-send]', foot).addEventListener('click', function () {
+      var name = ($('[data-c-name]', body).value || '').trim();
+      var phone = ($('[data-c-phone]', body).value || '').trim();
+      if (!name || !phone) { CW.toast(t('cat.public.required')); return; }
+      var appt = null;
+      if (hasBookable) {
+        var d = $('[data-c-date]', body).value, h = $('[data-c-time]', body).value;
+        if (d && h && h !== '—') appt = new Date(d + 'T' + h + ':00').toISOString();
+      }
+      var order = {
+        business_id: S.biz.id, code: CW.store.newOrderCode(),
+        customer_name: name, customer_phone: phone,
+        customer_address: ($('[data-c-address]', body).value || '').trim(),
+        customer_city: ($('[data-c-city]', body).value || '').trim(),
+        note: ($('[data-c-note]', body).value || '').trim(),
+        items: S.cart.map(function (x) { return { name: x.name, qty: x.qty, price: x.price, kind: x.kind }; }),
+        subtotal: subtotal(), fee: fee, total: total, appointment_at: appt, status: 'new'
+      };
+      var msg = CW.api.orderMessage(S.biz, order);
+      // Guarda (si no es demo) y abre WhatsApp
+      var save = (S.biz.id === 'demo' && CW.isDemo) ? Promise.resolve(order) : CW.store.createOrder(order);
+      save.then(function () {
+        window.open(CW.api.waLink(S.biz.whatsapp, msg), '_blank');
+        S.cart = []; updateCartUI(); closeCart(); drawGrid();
+        CW.toast('✓');
+      }).catch(function () { window.open(CW.api.waLink(S.biz.whatsapp, msg), '_blank'); });
+    });
+  }
+
+  // ---- Init -----------------------------------------------------------
+  document.addEventListener('DOMContentLoaded', function () {
+    var ov = $('[data-cart-overlay]'); if (ov) ov.addEventListener('click', closeCart);
+    var cc = $('[data-cart-close]'); if (cc) cc.addEventListener('click', closeCart);
+    var fab = $('[data-cart-fab]'); if (fab) fab.addEventListener('click', openCart);
+    window.addEventListener('cw:lang', function () { if (S.biz) render(); });
+    load().then(render).catch(function (e) { console.error(e); render(); });
+  });
+})(window, document);
