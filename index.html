@@ -23,8 +23,8 @@
 <meta name="twitter:title" content="Catalogo Wha">
 <meta name="twitter:description" content="Tu catálogo online con pedidos por WhatsApp.">
 
-<link rel="preload" as="style" href="assets/css/styles.css?v=4">
-<link rel="stylesheet" href="assets/css/styles.css?v=4">
+<link rel="preload" as="style" href="assets/css/styles.css?v=5">
+<link rel="stylesheet" href="assets/css/styles.css?v=5">
 <link rel="stylesheet" href="assets/css/landing.css?v=1">
 
 <script type="application/ld+json">
@@ -299,7 +299,7 @@
       <span class="lp-label">PLANES</span>
       <h2 class="lp-h2" data-i18n="landing.pricing.title">Precios simples</h2>
       <p class="lp-sub">Elige el plan que se ajuste a tu negocio. Puedes cambiarlo cuando quieras y no cobramos comisión por tus ventas.</p>
-      <div class="lp-plans">
+      <div class="lp-plans single">
         <article class="lp-plan">
           <h3 data-i18n="landing.pricing.free">Plan Gratuito</h3>
           <p class="plan-for">Para empezar sin pagar</p>
@@ -318,6 +318,8 @@
           <div class="lp-plan-cta"><a class="btn primary" href="login.html#signup" data-i18n="landing.pricing.cta">Empezar gratis</a></div>
         </article>
 
+        <!-- Plan Pro oculto temporalmente en la home. Para mostrarlo de nuevo,
+             quita este comentario y la clase "single" de .lp-plans.
         <article class="lp-plan featured">
           <h3>Plan Pro</h3>
           <p class="plan-for">Para catálogos que crecen</p>
@@ -338,6 +340,7 @@
           <div class="lp-plan-cta"><a class="btn primary" href="login.html#signup">Solicitar Pro</a></div>
           <p class="lp-plan-note">El plan Pro se activa manualmente por nuestro equipo.</p>
         </article>
+        -->
       </div>
     </div>
   </section>
@@ -399,7 +402,14 @@
     </div>
     <div><h5>Producto</h5><a href="#funciones">Funciones</a><a href="#planes">Precios</a><a href="#como">Cómo funciona</a></div>
     <div><h5>Recursos</h5><a href="#faq">FAQ</a><a href="login.html">Acceder</a><a href="catalogo.html?b=demo">Ejemplo</a></div>
-    <div><h5>Legal</h5><a href="#">Privacidad</a><a href="#">Términos</a><a href="#">Contacto</a></div>
+    <div><h5>Legal</h5>
+      <a href="#" data-policy="legal" data-i18n="pol.legal">Aviso legal</a>
+      <a href="#" data-policy="privacy" data-i18n="pol.privacy">Privacidad</a>
+      <a href="#" data-policy="cookies" data-i18n="pol.cookies">Cookies</a>
+      <a href="#" data-policy="terms" data-i18n="pol.terms">Términos</a>
+      <a href="#" data-policy="returns" data-i18n="pol.returns">Devoluciones</a>
+      <a href="#" data-policy="shipping" data-i18n="pol.shipping">Envíos</a>
+    </div>
   </div>
   <div class="lp-wrap lp-footer-bottom">
     <span>© <span data-year></span> Catalogo Wha</span>
@@ -418,9 +428,10 @@
 </div>
 
 <script>document.querySelectorAll('[data-year]').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
-<script defer src="assets/js/config.js?v=4"></script>
-<script defer src="assets/js/i18n.js?v=4"></script>
-<script defer src="assets/js/store.js?v=4"></script>
-<script defer src="assets/js/common.js?v=4"></script>
+<script defer src="assets/js/config.js?v=5"></script>
+<script defer src="assets/js/i18n.js?v=5"></script>
+<script defer src="assets/js/store.js?v=5"></script>
+<script defer src="assets/js/common.js?v=5"></script>
+<script defer src="assets/js/policies.js?v=1"></script>
 </body>
 </html>

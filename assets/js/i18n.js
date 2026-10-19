@@ -199,7 +199,35 @@
       'cat.public.notfound': 'Catálogo no encontrado',
       'cat.public.notfound.desc': 'El negocio que buscas no existe o no está publicado.',
       'cat.public.closed': 'El negocio no atiende ese día. Elige otra fecha.',
-      'cat.public.required': 'Nombre y teléfono son obligatorios.'
+      'cat.public.required': 'Nombre y teléfono son obligatorios.',
+
+      // Contactos del asistente
+      'cat.public.allcat': 'Todas las categorías',
+      'cat.public.clear': 'Limpiar',
+      'nav.contacts': 'Contactos',
+      'con.title': 'Contactos',
+      'con.sub': 'Contactos captados por el asistente del catálogo.',
+      'con.empty': 'Todavía no hay contactos',
+      'con.empty.desc': 'Cuando alguien deje sus datos en el asistente, aparecerá aquí.',
+      'con.search': 'Buscar por nombre, teléfono o necesidad…',
+      'con.need': 'Necesita',
+      'con.contact': 'Contactar por WhatsApp',
+      'con.export': 'Exportar CSV',
+      'con.delete': 'Eliminar',
+      'con.saved': 'Contacto guardado',
+      'con.status.new': 'Nuevo',
+      'con.status.contacted': 'Contactado',
+      'con.status.done': 'Atendido',
+      'con.status.discarded': 'Descartado',
+
+      // Políticas del pie
+      'pol.title': 'Información legal',
+      'pol.legal': 'Aviso legal',
+      'pol.privacy': 'Privacidad',
+      'pol.cookies': 'Cookies',
+      'pol.terms': 'Términos',
+      'pol.returns': 'Devoluciones',
+      'pol.shipping': 'Envíos'
     },
 
     fr: {
@@ -354,7 +382,31 @@
       'cat.public.send': 'Envoyer par WhatsApp', 'cat.public.quantity': 'Quantité', 'cat.public.subtotal': 'Sous-total',
       'cat.public.fee': 'Livraison', 'cat.public.total': 'Total', 'cat.public.notfound': 'Catalogue introuvable',
       'cat.public.notfound.desc': 'Ce commerce n’existe pas ou n’est pas publié.',
-      'cat.public.closed': 'Le commerce est fermé ce jour-là.', 'cat.public.required': 'Nom et téléphone obligatoires.'
+      'cat.public.closed': 'Le commerce est fermé ce jour-là.', 'cat.public.required': 'Nom et téléphone obligatoires.',
+      'cat.public.allcat': 'Toutes les catégories',
+      'cat.public.clear': 'Effacer',
+      'nav.contacts': 'Contacts',
+      'con.title': 'Contacts',
+      'con.sub': 'Contacts captés par l’assistant du catalogue.',
+      'con.empty': 'Aucun contact',
+      'con.empty.desc': 'Quand quelqu’un laissera ses coordonnées, il apparaîtra ici.',
+      'con.search': 'Rechercher par nom, téléphone ou besoin…',
+      'con.need': 'Besoin',
+      'con.contact': 'Contacter par WhatsApp',
+      'con.export': 'Exporter CSV',
+      'con.delete': 'Supprimer',
+      'con.saved': 'Contact enregistré',
+      'con.status.new': 'Nouveau',
+      'con.status.contacted': 'Contacté',
+      'con.status.done': 'Traité',
+      'con.status.discarded': 'Écarté',
+      'pol.title': 'Informations légales',
+      'pol.legal': 'Mentions légales',
+      'pol.privacy': 'Confidentialité',
+      'pol.cookies': 'Cookies',
+      'pol.terms': 'Conditions',
+      'pol.returns': 'Retours',
+      'pol.shipping': 'Livraison'
     },
 
     ar: {
@@ -484,7 +536,31 @@
       'cat.public.time': 'الوقت', 'cat.public.send': 'إرسال الطلب عبر واتساب', 'cat.public.quantity': 'الكمية',
       'cat.public.subtotal': 'المجموع الفرعي', 'cat.public.fee': 'التوصيل', 'cat.public.total': 'المجموع',
       'cat.public.notfound': 'الكتالوج غير موجود', 'cat.public.notfound.desc': 'هذا المتجر غير موجود أو غير منشور.',
-      'cat.public.closed': 'المتجر مغلق في هذا اليوم.', 'cat.public.required': 'الاسم والهاتف مطلوبان.'
+      'cat.public.closed': 'المتجر مغلق في هذا اليوم.', 'cat.public.required': 'الاسم والهاتف مطلوبان.',
+      'cat.public.allcat': 'كل الفئات',
+      'cat.public.clear': 'مسح',
+      'nav.contacts': 'جهات الاتصال',
+      'con.title': 'جهات الاتصال',
+      'con.sub': 'جهات الاتصال التي جمعها مساعد الكتالوج.',
+      'con.empty': 'لا توجد جهات اتصال',
+      'con.empty.desc': 'عندما يترك أحد بياناته في المساعد ستظهر هنا.',
+      'con.search': 'ابحث بالاسم أو الهاتف أو الطلب…',
+      'con.need': 'يحتاج',
+      'con.contact': 'تواصل عبر واتساب',
+      'con.export': 'تصدير CSV',
+      'con.delete': 'حذف',
+      'con.saved': 'تم حفظ جهة الاتصال',
+      'con.status.new': 'جديد',
+      'con.status.contacted': 'تم التواصل',
+      'con.status.done': 'تمت المعالجة',
+      'con.status.discarded': 'مستبعد',
+      'pol.title': 'معلومات قانونية',
+      'pol.legal': 'إشعار قانوني',
+      'pol.privacy': 'الخصوصية',
+      'pol.cookies': 'ملفات تعريف الارتباط',
+      'pol.terms': 'الشروط',
+      'pol.returns': 'الإرجاع',
+      'pol.shipping': 'التوصيل'
     }
   };
 
@@ -536,19 +612,53 @@
       });
     },
 
-    // Menú desplegable de idioma (banderas)
-    flags: { es: '🇪🇸', fr: '🇫🇷', ar: '🇲🇦' },
+    // Banderas en SVG: se ven igual en todos los sistemas (Windows no dibuja
+    // los emoji de bandera, por eso no se usan).
+    flagSvg: {
+      es: '<svg viewBox="0 0 24 16" width="22" height="15" aria-hidden="true"><rect width="24" height="16" fill="#c60b1e"/><rect y="4" width="24" height="8" fill="#ffc400"/><rect x="4.5" y="6.6" width="4" height="2.8" rx=".5" fill="#c60b1e" opacity=".85"/></svg>',
+      fr: '<svg viewBox="0 0 24 16" width="22" height="15" aria-hidden="true"><rect width="8" height="16" fill="#0055a4"/><rect x="8" width="8" height="16" fill="#ffffff"/><rect x="16" width="8" height="16" fill="#ef4135"/></svg>',
+      ar: '<svg viewBox="0 0 24 16" width="22" height="15" aria-hidden="true"><rect width="24" height="16" fill="#c1272d"/><polygon points="12,4.3 13.2,7.8 16.9,7.9 14,10.1 15.1,13.7 12,11.6 8.9,13.7 10,10.1 7.1,7.9 10.8,7.8" fill="none" stroke="#006233" stroke-width=".9"/></svg>'
+    },
+    langNames: { es: 'Español', fr: 'Français', ar: 'العربية' },
 
+    // Selector de idioma desplegable con banderas
     langSwitcher: function (el) {
       var self = this;
       function render() {
-        el.innerHTML = cfg.languages.map(function (l) {
-          return '<button type="button" class="lang-btn' + (l === self.lang ? ' active' : '') + '" data-lang="' + l + '">' +
-            self.flags[l] + ' <span>' + l.toUpperCase() + '</span></button>';
-        }).join('');
+        el.innerHTML =
+          '<div class="lang-dd">' +
+            '<button type="button" class="lang-dd-btn" aria-haspopup="listbox" aria-expanded="false">' +
+              '<span class="lang-flag">' + (self.flagSvg[self.lang] || '') + '</span>' +
+              '<span class="lang-code">' + self.lang.toUpperCase() + '</span>' +
+              '<span class="lang-caret" aria-hidden="true">▾</span>' +
+            '</button>' +
+            '<ul class="lang-dd-menu" role="listbox" hidden>' +
+              cfg.languages.map(function (l) {
+                return '<li role="option" aria-selected="' + (l === self.lang) + '">' +
+                  '<button type="button" data-lang="' + l + '"' + (l === self.lang ? ' class="active"' : '') + '>' +
+                  '<span class="lang-flag">' + (self.flagSvg[l] || '') + '</span>' +
+                  '<span class="lang-name">' + (self.langNames[l] || l.toUpperCase()) + '</span>' +
+                  (l === self.lang ? '<span class="lang-check">✓</span>' : '') +
+                  '</button></li>';
+              }).join('') +
+            '</ul>' +
+          '</div>';
+        var dd = el.querySelector('.lang-dd');
+        var btn = el.querySelector('.lang-dd-btn');
+        var menu = el.querySelector('.lang-dd-menu');
+        function close() { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); dd.classList.remove('open'); }
+        function open() { menu.hidden = false; btn.setAttribute('aria-expanded', 'true'); dd.classList.add('open'); }
+        btn.addEventListener('click', function (e) { e.stopPropagation(); if (menu.hidden) open(); else close(); });
+        menu.addEventListener('click', function (e) { e.stopPropagation(); });
         el.querySelectorAll('[data-lang]').forEach(function (b) {
-          b.addEventListener('click', function () { self.setLang(b.getAttribute('data-lang')); render(); });
+          b.addEventListener('click', function () { self.setLang(b.getAttribute('data-lang')); close(); });
         });
+        // Cierra al pulsar fuera o con Escape (se enlaza una sola vez)
+        if (!el._langBound) {
+          el._langBound = true;
+          document.addEventListener('click', function () { if (!menu.hidden) close(); });
+          document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !menu.hidden) close(); });
+        }
       }
       render();
       window.addEventListener('cw:lang', render);

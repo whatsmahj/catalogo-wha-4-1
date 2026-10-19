@@ -1,7 +1,7 @@
 /* Catalogo Wha · Service Worker
    Versión de caché única; solo se consulta la caché actual para no servir
    archivos antiguos. HTML network-first, estáticos cache-first. */
-const CACHE_VERSION = 'cw-v4';
+const CACHE_VERSION = 'cw-v5';
 const CACHE_NAME = 'catalogo-wha-' + CACHE_VERSION;
 
 const PRECACHE = [
@@ -11,14 +11,19 @@ const PRECACHE = [
   './dashboard.html',
   './catalogo.html',
   './manifest.webmanifest',
-  './assets/css/styles.css?v=4',
-  './assets/js/config.js?v=4',
-  './assets/js/i18n.js?v=4',
-  './assets/js/store.js?v=4',
-  './assets/js/common.js?v=4',
-  './assets/js/auth.js?v=4',
-  './assets/js/dashboard.js?v=4',
-  './assets/js/catalog.js?v=4'
+  './assets/css/styles.css?v=5',
+  './assets/css/landing.css?v=1',
+  './assets/css/catalog.css?v=1',
+  './assets/css/assistant.css?v=1',
+  './assets/js/config.js?v=5',
+  './assets/js/i18n.js?v=5',
+  './assets/js/store.js?v=5',
+  './assets/js/common.js?v=5',
+  './assets/js/policies.js?v=1',
+  './assets/js/auth.js?v=5',
+  './assets/js/dashboard.js?v=5',
+  './assets/js/catalog.js?v=5',
+  './assets/js/assistant.js?v=1'
 ];
 
 self.addEventListener('install', (e) => {

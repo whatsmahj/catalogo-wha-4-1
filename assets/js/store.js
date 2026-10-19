@@ -372,6 +372,11 @@
       return sb.from('orders').update({ status: status }).eq('id', id).then(function (r) { if (r.error) throw r.error; });
     },
 
+    deleteOrder: function (id) {
+      if (CW.isDemo) { LS.write('orders', LS.read('orders', []).filter(function (o) { return o.id !== id; })); return Promise.resolve(); }
+      return sb.from('orders').delete().eq('id', id).then(function (r) { if (r.error) throw r.error; });
+    },
+
     // ---- Biblioteca -----------------------------------------------------
     listLibrary: function (businessId) {
       if (CW.isDemo) {

@@ -70,3 +70,48 @@
 @media (max-width: 380px) {
   .pc-actions { flex-direction: column; }
 }
+
+/* Botón de compartir en la tarjeta */
+.pc-share { flex: 0 0 auto !important; padding-inline: 12px !important; }
+
+/* ==========================================================================
+   Ficha de detalle (arreglo del solapamiento de texto)
+   ========================================================================== */
+.detail-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+.detail-info { min-width: 0; }
+
+/* Antes se reutilizaba .card-chip, que es position:absolute y tapaba el texto. */
+.detail-type {
+  display: inline-block;
+  background: var(--brand-soft); color: var(--brand);
+  border-radius: 999px; padding: 5px 12px;
+  font-size: .74rem; font-weight: 800; letter-spacing: .02em;
+  margin-bottom: 10px; position: static;
+}
+.detail-info h2 { margin: 0 0 8px; font-size: 1.35rem; line-height: 1.2; }
+.detail-price { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+.detail-price b { font-size: 1.4rem; }
+.detail-price s { color: var(--muted); font-size: .95rem; }
+.detail-rows { list-style: none; padding: 0; margin: 12px 0; }
+.detail-rows li { padding: 7px 0; font-size: .92rem; border-bottom: 1px solid var(--line); }
+.detail-rows li:last-child { border-bottom: 0; }
+.detail-desc { color: var(--ink-2); font-size: .93rem; line-height: 1.65; margin: 12px 0 0; white-space: pre-line; }
+.detail-actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+.detail-actions .btn { flex: 1; min-width: 150px; }
+
+.dg-main { border-radius: 14px; overflow: hidden; background: var(--line); aspect-ratio: 4/3; }
+.dg-main img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* En móvil la ficha se convierte en hoja inferior */
+@media (max-width: 720px) {
+  .detail-grid { grid-template-columns: 1fr; gap: 18px; }
+  .cw-modal-overlay:has(.detail-modal) { align-items: end; padding: 0; }
+  .detail-modal { width: 100%; max-height: 92vh; border-radius: 22px 22px 0 0; }
+  .detail-modal .cw-modal-body { padding: 18px 16px; }
+  .detail-actions .btn { min-width: 0; }
+}
+
+/* Politicas en el pie del catalogo */
+.cat-policies { display: flex; flex-wrap: wrap; gap: 8px 18px; justify-content: center; margin-top: 10px; }
+.cat-policies a { color: var(--muted); font-size: .84rem; }
+.cat-policies a:hover { color: var(--brand); text-decoration: underline; }

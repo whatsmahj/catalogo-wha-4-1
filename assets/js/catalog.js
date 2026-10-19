@@ -10,7 +10,7 @@
 
   var S = {
     biz: null, cats: [], products: [],
-    filterType: 'all', filterCatP: '', filterCatS: '', sort: 'reco', q: '',
+    filterType: 'all', filterCat: '', sort: 'reco', q: '',
     cart: [] // {id, name, price, qty, kind, image}
   };
 
@@ -33,10 +33,10 @@
       { id: 'c4', business_id: 'demo', name: 'Reparaciones', slug: 'reparaciones', kind: 'service', sort_order: 4 }
     ];
     var products = [
-      { id: 'p1', business_id: 'demo', category_id: 'c1', name: 'Camiseta', description: 'Camiseta 100% algodón peinado. Disponible en varias tallas.', price: 100, promo_price: 60, images: [], kind: 'product', active: true, sort_order: 1, created_at: '2026-01-01' },
-      { id: 'p2', business_id: 'demo', category_id: 'c2', name: 'Arroz extra 5 kg', description: 'Arroz de grano largo.', price: 45, images: [], kind: 'product', active: true, sort_order: 2, created_at: '2026-01-02' },
-      { id: 'p3', business_id: 'demo', category_id: 'c3', name: 'Corte de pelo', description: 'Corte clásico con lavado.', price: 0, images: [], kind: 'service', duration: '45 minutos', modality: 'En el local', bookable: true, active: true, sort_order: 3, created_at: '2026-01-03' },
-      { id: 'p4', business_id: 'demo', category_id: 'c4', name: 'Reparación de electrodoméstico', description: 'Diagnóstico y reparación.', price: 150, images: [], kind: 'service', duration: '2 horas', modality: 'A domicilio', bookable: false, active: true, sort_order: 4, created_at: '2026-01-04' }
+      { id: 'p1', business_id: 'demo', category_id: 'c1', name: 'Camiseta', description: 'Camiseta 100% algodón peinado. Disponible en varias tallas.', price: 100, promo_price: 60, images: ['assets/demo/camiseta.svg'], kind: 'product', active: true, sort_order: 1, created_at: '2026-01-01' },
+      { id: 'p2', business_id: 'demo', category_id: 'c2', name: 'Arroz extra 5 kg', description: 'Arroz de grano largo, ideal para el día a día.', price: 45, images: ['assets/demo/arroz.svg'], kind: 'product', active: true, sort_order: 2, created_at: '2026-01-02' },
+      { id: 'p3', business_id: 'demo', category_id: 'c3', name: 'Corte de pelo', description: 'Corte clásico con lavado y peinado.', price: 0, images: ['assets/demo/corte.svg'], kind: 'service', duration: '45 minutos', modality: 'En el local', bookable: true, active: true, sort_order: 3, created_at: '2026-01-03' },
+      { id: 'p4', business_id: 'demo', category_id: 'c4', name: 'Reparación de electrodoméstico', description: 'Diagnóstico y reparación a domicilio.', price: 150, images: ['assets/demo/reparacion.svg'], kind: 'service', duration: '2 horas', modality: 'A domicilio', bookable: false, active: true, sort_order: 4, created_at: '2026-01-04' }
     ];
     return { biz: b, cats: cats, products: products };
   }
@@ -107,7 +107,12 @@
     root.innerHTML = hero + info +
       '<div class="filter-bar-cat" data-filters>' + renderFilters() + '</div>' +
       '<section class="wrap cat-grid" data-grid></section>' +
-      '<footer class="cat-footer"><div class="wrap">' + esc(b.name) + ' · Catalogo Wha</div></footer>';
+      '<footer class="cat-footer"><div class="wrap"><div>' + esc(b.name) + ' · Catalogo Wha</div>' +
+        '<nav class="cat-policies">' +
+          ['legal', 'privacy', 'cookies', 'terms', 'returns', 'shipping'].map(function (k) {
+            return '<a href="#" data-policy="' + k + '">' + t('pol.' + k) + '</a>';
+          }).join('') +
+        '</nav></div></footer>';
 
     bindFilters();
     drawGrid();
@@ -126,37 +131,45 @@
   function countInCat(catId) { return S.products.filter(function (p) { return p.category_id === catId; }).length; }
 
   function renderFilters() {
-    var catP = S.cats.filter(function (c) { return c.kind !== 'service'; });
-    var catS = S.cats.filter(function (c) { return c.kind === 'service'; });
-    var showP = S.filterType !== 'service' && catP.length;
-    var showS = S.filterType !== 'product' && catS.length;
-    function opts(list, sel) {
-      return '<option value="">' + t('common.all') + '</option>' + list.map(function (c) {
-        return '<option value="' + c.id + '"' + (c.id === sel ? ' selected' : '') + '>' + esc(c.name) + ' (' + countInCat(c.id) + ')</option>';
-      }).join('');
+    // Una sola lista de categorias, agrupada por tipo y respetando el filtro de tipo.
+    var cats = S.cats.filter(function (c) {
+      if (S.filterType === 'product') return c.kind !== 'service';
+      if (S.filterType === 'service') return c.kind === 'service';
+      return true;
+    });
+    var prodCats = cats.filter(function (c) { return c.kind !== 'service'; });
+    var servCats = cats.filter(function (c) { return c.kind === 'service'; });
+    function opt(c) { return '<option value="' + c.id + '"' + (c.id === S.filterCat ? ' selected' : '') + '>' + esc(c.name) + ' (' + countInCat(c.id) + ')</option>'; }
+    var catOpts = '<option value="">' + t('cat.public.allcat') + '</option>';
+    if (prodCats.length && servCats.length) {
+      catOpts += '<optgroup label="' + t('cat.public.products') + '">' + prodCats.map(opt).join('') + '</optgroup>';
+      catOpts += '<optgroup label="' + t('cat.public.services') + '">' + servCats.map(opt).join('') + '</optgroup>';
+    } else {
+      catOpts += cats.map(opt).join('');
     }
+    var active = S.filterType !== 'all' || S.filterCat || S.q || S.sort !== 'reco';
     return '<div class="wrap filter-inner">' +
       '<div class="segmented" data-ftype>' +
         '<button data-ft="all" class="' + (S.filterType === 'all' ? 'active' : '') + '">' + t('common.all') + '</button>' +
         '<button data-ft="product" class="' + (S.filterType === 'product' ? 'active' : '') + '">' + t('cat.public.products') + '</button>' +
         '<button data-ft="service" class="' + (S.filterType === 'service' ? 'active' : '') + '">' + t('cat.public.services') + '</button>' +
       '</div>' +
-      (showP ? '<select data-fcatp>' + opts(catP, S.filterCatP) + '</select>' : '') +
-      (showS ? '<select data-fcats>' + opts(catS, S.filterCatS) + '</select>' : '') +
-      '<select data-fsort>' +
+      (cats.length ? '<select data-fcat aria-label="' + t('common.category') + '">' + catOpts + '</select>' : '') +
+      '<select data-fsort aria-label="' + t('cat.public.sort') + '">' +
         ['reco', 'priceasc', 'pricedesc', 'news'].map(function (k) {
           return '<option value="' + k + '"' + (S.sort === k ? ' selected' : '') + '>' + t('cat.public.' + k) + '</option>';
         }).join('') + '</select>' +
       '<input class="search" data-fq placeholder="' + t('cat.public.search') + '" value="' + esc(S.q) + '">' +
+      (active ? '<button class="btn ghost small" data-fclear>' + t('cat.public.clear') + '</button>' : '') +
       '</div>';
   }
 
   function bindFilters() {
-    $$('[data-ft]').forEach(function (b) { b.addEventListener('click', function () { S.filterType = b.dataset.ft; S.filterCatP = ''; S.filterCatS = ''; rerenderFilters(); }); });
-    var fp = $('[data-fcatp]'); if (fp) fp.addEventListener('change', function () { S.filterCatP = fp.value; drawGrid(); });
-    var fs = $('[data-fcats]'); if (fs) fs.addEventListener('change', function () { S.filterCatS = fs.value; drawGrid(); });
+    $$('[data-ft]').forEach(function (b) { b.addEventListener('click', function () { S.filterType = b.dataset.ft; S.filterCat = ''; rerenderFilters(); }); });
+    var fc = $('[data-fcat]'); if (fc) fc.addEventListener('change', function () { S.filterCat = fc.value; drawGrid(); });
     var so = $('[data-fsort]'); if (so) so.addEventListener('change', function () { S.sort = so.value; drawGrid(); });
     var q = $('[data-fq]'); if (q) q.addEventListener('input', function () { S.q = q.value; drawGrid(); });
+    var cl = $('[data-fclear]'); if (cl) cl.addEventListener('click', function () { S.filterType = 'all'; S.filterCat = ''; S.q = ''; S.sort = 'reco'; rerenderFilters(); });
   }
   function rerenderFilters() {
     $('[data-filters]').innerHTML = renderFilters();
@@ -169,8 +182,7 @@
     var list = S.products.slice();
     if (S.filterType === 'product') list = list.filter(function (p) { return p.kind !== 'service'; });
     if (S.filterType === 'service') list = list.filter(function (p) { return p.kind === 'service'; });
-    if (S.filterCatP) list = list.filter(function (p) { return p.category_id === S.filterCatP; });
-    if (S.filterCatS) list = list.filter(function (p) { return p.category_id === S.filterCatS; });
+    if (S.filterCat) list = list.filter(function (p) { return p.category_id === S.filterCat; });
     if (S.q) { var q = S.q.toLowerCase(); list = list.filter(function (p) { return (p.name || '').toLowerCase().includes(q) || (p.description || '').toLowerCase().includes(q); }); }
     if (S.sort === 'priceasc') list.sort(function (a, b) { return eff(a) - eff(b); });
     else if (S.sort === 'pricedesc') list.sort(function (a, b) { return eff(b) - eff(a); });
@@ -188,6 +200,13 @@
     grid.innerHTML = list.map(cardHTML).join('');
     $$('[data-add]', grid).forEach(function (b) { b.addEventListener('click', function () { addToCart(b.dataset.add); }); });
     $$('[data-detail]', grid).forEach(function (b) { b.addEventListener('click', function () { openDetail(b.dataset.detail); }); });
+    $$('[data-share]', grid).forEach(function (b) { b.addEventListener('click', function (e) { e.stopPropagation(); shareCard(b.dataset.share); }); });
+  }
+
+  function shareCard(id) {
+    var p = S.products.find(function (x) { return x.id === id; }); if (!p) return;
+    var c = catOf(p.category_id);
+    CW.api.shareWhatsApp(CW.api.shareItem(S.biz, Object.assign({ category_name: c ? c.name : '' }, p)));
   }
 
   function cardHTML(p) {
@@ -235,6 +254,7 @@
         '<div class="pc-actions">' +
           '<button class="btn primary small" data-add="' + p.id + '">' + btn + '</button>' +
           '<button class="btn ghost small" data-detail="' + p.id + '">' + t('cat.public.details') + '</button>' +
+          '<button class="btn ghost small pc-share" data-share="' + p.id + '" aria-label="' + t('common.share') + '" title="' + t('common.share') + '">↗</button>' +
         '</div>' +
       '</div></article>';
   }
@@ -252,7 +272,7 @@
         '<div class="detail-grid">' +
           '<div class="detail-gallery"><div class="dg-main" data-dg-main>' + (imgs[0] ? '<img src="' + esc(imgs[0]) + '">' : '<div class="ph-img big">🖼️</div>') + '</div>' +
           (imgs.length > 1 ? '<div class="dg-thumbs">' + imgs.map(function (u, i) { return '<button data-dg="' + i + '" class="' + (i === 0 ? 'active' : '') + '">' + (u ? '<img src="' + esc(u) + '">' : '🖼️') + '</button>'; }).join('') + '</div>' : '') + '</div>' +
-          '<div class="detail-info"><span class="card-chip">' + (p.kind === 'service' ? '🔧 ' + t('prod.type.service') : '📦 ' + t('prod.type.product')) + (c ? ' · ' + esc(c.name) : '') + '</span>' +
+          '<div class="detail-info"><span class="detail-type">' + (p.kind === 'service' ? t('prod.type.service') : t('prod.type.product')) + (c ? ' · ' + esc(c.name) : '') + '</span>' +
           '<h2>' + esc(p.name) + '</h2>' +
           '<div class="detail-price">' + (Number(p.promo_price) > 0 && Number(p.promo_price) < Number(p.price) ?
             '<b>' + money(p.promo_price, S.biz.currency) + '</b> <s>' + money(p.price, S.biz.currency) + '</s> <span class="tag warn">-' + CW.api.pct(p.promo_price, p.price) + '%</span>' :
@@ -277,9 +297,7 @@
     });
     $('[data-d-add]', m.modal).addEventListener('click', function () { addToCart(p.id); m.close(); openCart(); });
     $('[data-d-share]', m.modal).addEventListener('click', function () {
-      var txt = CW.api.shareItem(S.biz, Object.assign({ category_name: c ? c.name : '' }, p));
-      if (navigator.share) navigator.share({ title: p.name, text: txt }).catch(function () {});
-      else CW.api.copy(txt);
+      CW.api.shareWhatsApp(CW.api.shareItem(S.biz, Object.assign({ category_name: c ? c.name : '' }, p)));
     });
   }
 
@@ -366,7 +384,7 @@
           '<div><span>' + t('cat.public.fee') + '</span><b>+' + money(fee, S.biz.currency) + '</b></div>' : '') +
         '<div class="grand"><span>' + t('cat.public.total') + '</span><b>' + money(total, S.biz.currency) + '</b></div>' +
       '</div>' +
-      '<button class="btn primary block" data-send>💬 ' + t('cat.public.send') + '</button>';
+      '<button class="btn wa block" data-send>💬 ' + t('cat.public.send') + '</button>';
 
     $$('[data-qm]', body).forEach(function (b) { b.addEventListener('click', function () { setQty(b.dataset.qm, -1); }); });
     $$('[data-qp]', body).forEach(function (b) { b.addEventListener('click', function () { setQty(b.dataset.qp, 1); }); });

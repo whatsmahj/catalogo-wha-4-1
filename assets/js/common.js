@@ -66,6 +66,52 @@
 
     COUNTRY_CODES: null, // se asigna abajo
 
+    // Texto de compartir: estructurado, con negrita nativa de WhatsApp y SIN
+    // emojis ni simbolos que algunos dispositivos no muestran bien.
+    shareItem: function (biz, item) {
+      var cur = biz.currency || cfg.defaultCurrency;
+      var line = '--------------------------------';
+      var L = [];
+      L.push('*' + item.name + '*');
+      L.push(line);
+      if (item.kind === 'service') {
+        L.push('Tipo: Servicio');
+        L.push('Precio: ' + (Number(item.price) > 0 ? CWU.money(item.price, cur) : 'A consultar'));
+        if (item.duration) L.push('Duracion: ' + item.duration);
+        if (item.modality) L.push('Modalidad: ' + item.modality);
+        L.push('Disponibilidad: Si');
+      } else {
+        L.push('Tipo: Producto');
+        if (Number(item.promo_price) > 0 && Number(item.promo_price) < Number(item.price)) {
+          L.push('Precio: ' + CWU.money(item.promo_price, cur));
+          L.push('Antes: ' + CWU.money(item.price, cur));
+          L.push('Ahorro: ' + CWU.pct(item.promo_price, item.price) + '%');
+        } else {
+          L.push('Precio: ' + CWU.money(item.price, cur));
+        }
+      }
+      if (item.category_name) L.push('Categoria: ' + item.category_name);
+      if (item.description) {
+        L.push(line);
+        L.push(String(item.description).trim().slice(0, 260));
+      }
+      L.push(line);
+      L.push('*' + biz.name + '*');
+      if (biz.whatsapp) L.push('WhatsApp: ' + biz.whatsapp);
+      L.push(CW.catalogUrl(biz.slug));
+      return L.join('\n');
+    },
+
+    // Comparte por WhatsApp (elige contacto) o usa el compartir del sistema.
+    shareWhatsApp: function (text) {
+      var url = 'https://wa.me/?text=' + encodeURIComponent(text);
+      if (navigator.share) {
+        navigator.share({ text: text }).catch(function () { window.open(url, '_blank', 'noopener'); });
+      } else {
+        window.open(url, '_blank', 'noopener');
+      }
+    },
+
     // Genera el mensaje de pedido estructurado (sin emojis).
     orderMessage: function (biz, order, opts) {
       opts = opts || {};
@@ -125,36 +171,6 @@
     waLink: function (phone, text) {
       var p = String(phone || '').replace(/[^\d]/g, '');
       return 'https://wa.me/' + p + '?text=' + encodeURIComponent(text || '');
-    },
-
-    shareItem: function (biz, item) {
-      var cur = biz.currency || cfg.defaultCurrency;
-      var out = [];
-      out.push('*' + item.name + '*');
-      var priceLine;
-      if (Number(item.promo_price) > 0 && Number(item.promo_price) < Number(item.price)) {
-        priceLine = CWU.money(item.promo_price, cur) + ' (antes ' + CWU.money(item.price, cur) + ' · -' + CWU.pct(item.promo_price, item.price) + '%)';
-      } else if (Number(item.price) > 0) {
-        priceLine = CWU.money(item.price, cur);
-      } else {
-        priceLine = 'A consultar';
-      }
-      out.push(priceLine);
-      if (item.description) out.push('');
-      if (item.description) out.push(String(item.description).slice(0, 220));
-      out.push('');
-      if (item.category_name) out.push('Categoría: ' + item.category_name);
-      if (item.kind === 'service') {
-        if (item.duration) out.push('Duración: ' + item.duration);
-        if (item.modality) out.push('Modalidad: ' + item.modality);
-      } else if (Number(item.promo_price) > 0 && Number(item.promo_price) < Number(item.price)) {
-        out.push('Ahorro: ' + CWU.pct(item.promo_price, item.price) + '%');
-      }
-      out.push('');
-      out.push('*' + biz.name + '*');
-      if (biz.whatsapp) out.push('Teléfono: ' + biz.whatsapp);
-      out.push(CW.catalogUrl(biz.slug));
-      return out.join('\n');
     },
 
     // Huecos horarios según horario del negocio

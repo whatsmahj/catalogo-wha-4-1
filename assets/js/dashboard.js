@@ -86,7 +86,7 @@
   // ---------------------------------------------------------------------
   // Router
   // ---------------------------------------------------------------------
-  var ROUTES = ['home', 'orders', 'agenda', 'sales', 'products', 'categories', 'library', 'settings', 'plan', 'account', 'admin'];
+  var ROUTES = ['home', 'orders', 'contacts', 'agenda', 'sales', 'products', 'categories', 'library', 'settings', 'plan', 'account', 'admin'];
 
   function route() {
     var h = location.hash.replace(/^#/, '') || 'home';
@@ -99,7 +99,7 @@
     closeSidebar();
     var view = $('[data-view]');
     var fn = ({
-      home: renderHome, orders: renderOrders, agenda: renderAgenda, sales: renderSales,
+      home: renderHome, orders: renderOrders, contacts: renderContacts, agenda: renderAgenda, sales: renderSales,
       products: renderProducts, categories: renderCategories, library: renderLibrary,
       settings: renderSettings, plan: renderPlan, account: renderAccount, admin: renderAdmin
     })[state.route];
@@ -276,7 +276,7 @@
         '<div class="status-picker">' + ['new', 'confirmed', 'delivered', 'cancelled'].map(function (s) {
           return '<button class="chip' + (o.status === s ? ' active' : '') + '" data-st="' + s + '">' + t('ord.status.' + s) + '</button>';
         }).join('') + '</div>',
-      footer: '<a class="btn ghost" target="_blank" href="' + CW.api.waLink(o.customer_phone, msg) + '">' + t('ord.contact') + '</a>'
+      footer: '<a class="btn wa" target="_blank" rel="noopener" href="' + CW.api.waLink(o.customer_phone, msg) + '">' + t('ord.contact') + '</a>'
     });
     $$('[data-st]', m.modal).forEach(function (b) {
       b.addEventListener('click', function () {
@@ -285,6 +285,89 @@
         });
       });
     });
+  }
+
+  // ---------------------------------------------------------------------
+  // CONTACTOS (captados por el asistente del catálogo)
+  // ---------------------------------------------------------------------
+  // Un contacto del asistente es un pedido sin artículos: el asistente guarda
+  // el pedido con items vacíos y la necesidad en la nota.
+  function isLead(o) { return !(o.items && o.items.length); }
+  function leadNeed(o) {
+    var n = o.note || '';
+    var m = n.match(/Necesita:\s*(.*)$/i);
+    return m ? m[1].trim() : n;
+  }
+
+  function renderContacts(view) {
+    var leads = state.orders.filter(isLead);
+    view.innerHTML =
+      '<div class="view-head"><div><h1>' + t('con.title') + '</h1><p class="muted">' + t('con.sub') + '</p></div>' +
+      '<div class="head-actions"><input class="search" data-cq placeholder="' + t('con.search') + '">' +
+      '<button class="btn ghost" data-ccsv>' + t('con.export') + '</button></div></div>' +
+      '<div data-clist></div>';
+
+    function draw(q) {
+      var list = leads.filter(function (o) {
+        if (!q) return true;
+        var s = ((o.customer_name || '') + ' ' + (o.customer_phone || '') + ' ' + (o.note || '')).toLowerCase();
+        return s.indexOf(q.toLowerCase()) >= 0;
+      });
+      if (!list.length) {
+        $('[data-clist]', view).innerHTML = '<div class="card empty-state"><div class="es-icon">👥</div><b>' + t('con.empty') + '</b><p>' + t('con.empty.desc') + '</p></div>';
+        view._leads = [];
+        return;
+      }
+      $('[data-clist]', view).innerHTML = '<div class="card"><div class="card-head"><h3>' + t('con.title') + '</h3><span class="muted">' + list.length + '</span></div>' +
+        '<div class="table-wrap"><table class="data-table"><thead><tr>' +
+        '<th>' + t('common.name') + '</th><th>' + t('common.phone') + '</th><th>' + t('con.need') + '</th><th>' + t('common.status') + '</th><th>' + t('ord.date') + '</th><th></th></tr></thead><tbody>' +
+        list.map(function (o) {
+          return '<tr><td><b>' + esc(o.customer_name || '—') + '</b></td>' +
+            '<td>' + esc(o.customer_phone || '—') + '</td>' +
+            '<td class="muted">' + esc(leadNeed(o)).slice(0, 90) + '</td>' +
+            '<td><select class="mini-select" data-cst="' + o.id + '">' +
+              [['new', 'new'], ['confirmed', 'contacted'], ['delivered', 'done'], ['cancelled', 'discarded']].map(function (p) {
+                return '<option value="' + p[0] + '"' + (o.status === p[0] ? ' selected' : '') + '>' + t('con.status.' + p[1]) + '</option>';
+              }).join('') +
+            '</select></td>' +
+            '<td>' + CW.api.dateTime(o.created_at) + '</td>' +
+            '<td class="row-actions"><a class="btn wa small" target="_blank" rel="noopener" href="' + CW.api.waLink(o.customer_phone, 'Hola ' + (o.customer_name || '') + ', te escribo por tu consulta.') + '">💬</a>' +
+            '<button class="btn ghost small danger" data-cdel="' + o.id + '">✕</button></td></tr>';
+        }).join('') + '</tbody></table></div></div>';
+
+      $$('[data-cst]', view).forEach(function (s) {
+        s.addEventListener('change', function () {
+          var id = s.dataset.cst, st = s.value;
+          CW.store.updateOrderStatus(id, st).then(function () {
+            var o = state.orders.find(function (x) { return x.id === id; });
+            if (o) o.status = st;
+            CW.toast(t('con.saved'));
+          });
+        });
+      });
+      $$('[data-cdel]', view).forEach(function (b) {
+        b.addEventListener('click', function () {
+          CW.confirm('¿Eliminar este contacto?', function () {
+            CW.store.deleteOrder(b.dataset.cdel).then(function () {
+              state.orders = state.orders.filter(function (x) { return x.id !== b.dataset.cdel; });
+              leads = state.orders.filter(isLead);
+              draw($('[data-cq]', view).value);
+            });
+          }, true);
+        });
+      });
+      view._leads = list;
+    }
+
+    $('[data-cq]', view).addEventListener('input', function (e) { draw(e.target.value); });
+    $('[data-ccsv]', view).addEventListener('click', function () {
+      var rows = [['Nombre', 'Telefono', 'Necesita', 'Estado', 'Fecha']];
+      (view._leads || []).forEach(function (o) {
+        rows.push([o.customer_name || '', o.customer_phone || '', leadNeed(o), o.status, o.created_at]);
+      });
+      CW.api.download('contactos.csv', '\ufeff' + CW.api.toCSV(rows), 'text/csv');
+    });
+    draw('');
   }
 
   // ---------------------------------------------------------------------
@@ -741,13 +824,19 @@
         field('Cierre', '<input type="time" data-f="close_time" value="' + esc(b.close_time || '18:00') + '">') + '</div>' +
         field('Intervalo de citas (min)', '<input type="number" data-f="slot_minutes" value="' + (b.slot_minutes || 30) + '">'));
     else if (id === 'seo') body =
-      card(t('set.seo'), '',
-        field('Título SEO', '<input data-f="seo_title" value="' + esc(b.seo_title || '') + '">') +
-        field('Descripción SEO', '<textarea data-f="seo_description" rows="2">' + esc(b.seo_description || '') + '</textarea>') +
-        field('Palabras clave', '<input data-f="seo_keywords" value="' + esc(b.seo_keywords || '') + '">') +
+      card('Buscadores', 'Cómo apareces en Google',
+        field('Título SEO <span class="muted" data-c-seo-t></span>', '<input data-f="seo_title" maxlength="70" value="' + esc(b.seo_title || '') + '" placeholder="' + esc(b.name) + '">') +
+        field('Descripción SEO <span class="muted" data-c-seo-d></span>', '<textarea data-f="seo_description" rows="3" maxlength="170" placeholder="Describe tu catálogo en una frase.">' + esc(b.seo_description || '') + '</textarea>') +
+        field('Palabras clave <span class="muted">(separadas por comas)</span>', '<input data-f="seo_keywords" value="' + esc(b.seo_keywords || '') + '">') +
+        '<span class="kicker">VISTA PREVIA EN GOOGLE</span>' +
         '<div class="google-preview"><div class="gp-url">https://' + esc(CW.publicHost) + '/' + esc(b.slug) + '</div>' +
-        '<div class="gp-title">' + esc(b.seo_title || b.name) + '</div>' +
-        '<div class="gp-desc">' + esc(b.seo_description || b.description || '') + '</div></div>');
+        '<div class="gp-title" data-gp-title>' + esc(b.seo_title || b.name) + '</div>' +
+        '<div class="gp-desc" data-gp-desc>' + esc(b.seo_description || b.description || '') + '</div></div>') +
+      card('Redes y WhatsApp', 'Cómo se ve el enlace al compartirlo',
+        field('Imagen para compartir <span class="muted">(recomendado 1200 × 630)</span>', '<div class="img-slot ' + (b.seo_image ? 'filled' : '') + '" data-seo-img style="max-width:300px">' + (b.seo_image ? '<img src="' + esc(b.seo_image) + '">' : '<span>+</span>') + '</div>') +
+        '<span class="kicker">VISTA PREVIA SOCIAL</span>' +
+        '<div class="social-preview"><div class="sp-img" data-sp-img>' + (b.seo_image ? '<img src="' + esc(b.seo_image) + '">' : '<span>Sin imagen</span>') + '</div>' +
+        '<div class="sp-body"><small data-sp-url>' + esc(CW.publicHost) + '</small><b data-sp-title>' + esc(b.seo_title || b.name) + '</b><span data-sp-desc>' + esc(b.seo_description || b.description || '') + '</span></div></div>');
 
     view.innerHTML = '<div class="view-head"><div><span class="crumb-mini">' + t('set.title') + ' / ' + esc(title) + '</span><h1>' + esc(title) + '</h1></div>' +
       '<button class="btn ghost" data-back>← ' + t('common.back') + '</button></div>' + body +
@@ -803,6 +892,30 @@
         });
       });
     }
+    if (id === 'seo') {
+      var tEl = $('[data-f="seo_title"]', view), dEl = $('[data-f="seo_description"]', view);
+      function upd() {
+        var tv = tEl.value, dv = dEl.value;
+        $('[data-c-seo-t]', view).textContent = tv.length + '/70';
+        $('[data-c-seo-d]', view).textContent = dv.length + '/170';
+        var gt = $('[data-gp-title]', view), gd = $('[data-gp-desc]', view);
+        var st = $('[data-sp-title]', view), sd = $('[data-sp-desc]', view);
+        if (gt) gt.textContent = tv || b.name;
+        if (gd) gd.textContent = dv || b.description || '';
+        if (st) st.textContent = tv || b.name;
+        if (sd) sd.textContent = dv || b.description || '';
+      }
+      tEl.addEventListener('input', upd); dEl.addEventListener('input', upd); upd();
+      var si = $('[data-seo-img]', view);
+      if (si) si.addEventListener('click', function () {
+        openImagePicker(1, function (u) {
+          if (!u[0]) return;
+          view._seoImg = u[0];
+          si.innerHTML = '<img src="' + esc(u[0]) + '">'; si.classList.add('filled');
+          var spi = $('[data-sp-img]', view); if (spi) spi.innerHTML = '<img src="' + esc(u[0]) + '">';
+        });
+      });
+    }
     if (id === 'info') $('[data-gocur]', view).addEventListener('click', function () { location.hash = '#settings/currency'; });
 
     $('[data-save]', view).addEventListener('click', function () {
@@ -822,7 +935,7 @@
       else if (id === 'delivery') patch = { delivery: ($('input[name=dv]:checked', view) || {}).value || 'whatsapp', delivery_fee: Number(val('delivery_fee') || 0), delivery_time: val('delivery_time'), delivery_notes: val('delivery_notes') };
       else if (id === 'payments') patch = { payments: view._pays, payment_notes: val('payment_notes') };
       else if (id === 'hours') patch = { work_days: view._days, open_time: val('open_time'), close_time: val('close_time'), slot_minutes: Number(val('slot_minutes') || 30) };
-      else if (id === 'seo') patch = { seo_title: val('seo_title'), seo_description: val('seo_description'), seo_keywords: val('seo_keywords') };
+      else if (id === 'seo') patch = { seo_title: val('seo_title'), seo_description: val('seo_description'), seo_keywords: val('seo_keywords'), seo_image: view._seoImg || b.seo_image };
 
       CW.store.saveBusiness(b.id, patch).then(function (nb) {
         state.biz = nb || Object.assign({}, b, patch);

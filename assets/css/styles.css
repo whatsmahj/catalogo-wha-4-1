@@ -364,6 +364,15 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 .gp-url { color: var(--ok); font-size: .82rem; }
 .gp-title { color: #1a0dab; font-size: 1.1rem; font-weight: 600; margin: 4px 0; }
 .gp-desc { color: var(--ink-2); font-size: .88rem; }
+.mini-select { border: 1px solid var(--line-2); border-radius: 999px; padding: 6px 10px; font-size: .82rem; background: #fff; }
+.social-preview { display: grid; grid-template-columns: 150px 1fr; gap: 14px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #fff; }
+.social-preview .sp-img { background: var(--bg); display: grid; place-items: center; min-height: 110px; color: var(--muted); font-size: .8rem; }
+.social-preview .sp-img img { width: 100%; height: 100%; object-fit: cover; }
+.social-preview .sp-body { padding: 12px 14px 12px 0; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.social-preview .sp-body small { color: var(--muted); text-transform: uppercase; font-size: .72rem; letter-spacing: .04em; }
+.social-preview .sp-body b { font-size: .95rem; }
+.social-preview .sp-body span { color: var(--ink-2); font-size: .84rem; }
+@media (max-width: 520px) { .social-preview { grid-template-columns: 1fr; } .social-preview .sp-body { padding: 0 14px 14px; } }
 .plan-row { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 22px; margin-bottom: 20px; }
 .plan-cell h3 { display: flex; align-items: center; gap: 8px; }
 .progress { height: 8px; border-radius: 999px; background: var(--line); overflow: hidden; margin: 10px 0; }
@@ -521,3 +530,53 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
+
+/* ==========================================================================
+   Selector de idioma desplegable (con banderas)
+   ========================================================================== */
+.lang-dd { position: relative; }
+.lang-dd-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: #fff; border: 1px solid var(--line-2); border-radius: 999px;
+  padding: 7px 12px; font-weight: 700; font-size: .82rem; color: var(--ink-2); cursor: pointer;
+}
+.lang-dd-btn:hover { border-color: var(--brand); color: var(--brand); }
+.lang-dd.open .lang-dd-btn { border-color: var(--brand); color: var(--brand); }
+.lang-flag { display: inline-flex; align-items: center; }
+.lang-flag svg { display: block; border-radius: 2px; box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
+.lang-caret { font-size: .68rem; opacity: .6; }
+.lang-dd-menu {
+  position: absolute; inset-block-start: calc(100% + 6px); inset-inline-end: 0;
+  min-width: 172px; background: #fff; border: 1px solid var(--line);
+  border-radius: 14px; box-shadow: var(--shadow-lg); padding: 6px;
+  margin: 0; list-style: none; z-index: 200;
+}
+.lang-dd-menu button {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  background: none; border: 0; border-radius: 10px; padding: 9px 10px;
+  font-size: .88rem; font-weight: 600; color: var(--ink); text-align: start; cursor: pointer;
+}
+.lang-dd-menu button:hover { background: var(--bg); }
+.lang-dd-menu button.active { background: var(--brand-soft); color: var(--brand); }
+.lang-name { flex: 1; }
+.lang-check { color: var(--brand); font-weight: 800; }
+
+/* ==========================================================================
+   Botones de WhatsApp (siempre verdes)
+   ========================================================================== */
+.btn.wa { background: #25D366; color: #fff; box-shadow: 0 6px 18px rgba(37,211,102,.28); }
+.btn.wa:hover { background: #1ebe5b; color: #fff; }
+.btn.wa-ghost { background: #fff; border-color: #25D366; color: #128C7E; }
+.btn.wa-ghost:hover { background: #eafaf1; border-color: #1ebe5b; }
+
+/* ==========================================================================
+   Pop-up de políticas del pie
+   ========================================================================== */
+.policy-modal .cw-modal-body { line-height: 1.65; }
+.policy-modal h4 { margin: 18px 0 6px; font-size: 1rem; color: var(--ink); }
+.policy-modal h4:first-of-type { margin-top: 0; }
+.policy-modal p, .policy-modal li { font-size: .92rem; color: var(--ink-2); }
+.policy-modal ul { padding-inline-start: 20px; margin: 6px 0; }
+.policy-meta { font-size: .8rem; color: var(--muted); margin-bottom: 12px; }
+.policy-foot { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+.policy-foot a { color: var(--brand); font-weight: 700; font-size: .86rem; }
