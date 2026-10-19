@@ -122,6 +122,7 @@
     view.innerHTML = '';
     fn(view);
     CW.i18n.apply(view);
+    if (CW.panelI18n) CW.panelI18n.apply(view);
     window.scrollTo(0, 0);
   }
 
@@ -866,7 +867,7 @@
     }
     else if (id === 'payments') body =
       card(t('set.payments'), t('set.payments.desc'),
-        '<div class="chips" data-pays>' + ['Efectivo', 'Transferencia bancaria', 'Tarjeta', 'Pago al recibir'].map(function (p) {
+        '<div class="chips" data-pays data-no-i18n>' + ['Efectivo', 'Transferencia bancaria', 'Tarjeta', 'Pago al recibir'].map(function (p) {
           var on = (b.payments || []).indexOf(p) >= 0;
           return '<button type="button" class="chip' + (on ? ' active' : '') + '" data-pay="' + esc(p) + '">' + p + '</button>';
         }).join('') + '</div>' + field('Notas', '<textarea data-f="payment_notes" rows="2">' + esc(b.payment_notes || '') + '</textarea>'));
@@ -881,6 +882,7 @@
     else if (id === 'seo') {
       var autoImg = (state.products[0] && state.products[0].images && state.products[0].images[0]) || b.hero_image || b.logo_url || '';
       var prevImg = b.seo_image || autoImg;
+      var domain = String(CW.publicHost || '').toUpperCase();
       body =
         '<div class="set-two seo-two">' +
           '<div class="set-col">' +
@@ -890,25 +892,29 @@
               '<p class="muted">Explica en pocas palabras qué vendes y qué encontrará el cliente. Los colores son una guía, no una obligación.</p>' +
               '<label class="field"><span class="row-between-inline"><span>Título para buscadores y redes</span><small class="muted" data-c-seo-t></small></span>' +
                 '<input data-f="seo_title" maxlength="70" value="' + esc(b.seo_title || '') + '" placeholder="' + esc(b.name) + '">' +
-                '<small class="muted">Sugerencia: incluye tu nombre comercial y lo que vendes. Como guía visual, 30-60 caracteres suele ser una longitud clara. <span data-len-t></span></small>' +
+                '<small class="muted">Sugerencia: incluye tu nombre comercial y lo que vendes. Como guía visual, 30–60 caracteres suele ser una longitud clara. <span data-len-t></span></small>' +
               '</label>' +
               '<label class="field"><span class="row-between-inline"><span>Descripción</span><small class="muted" data-c-seo-d></small></span>' +
                 '<textarea data-f="seo_description" rows="4" maxlength="170" placeholder="Describe tu catálogo en una o dos frases.">' + esc(b.seo_description || '') + '</textarea>' +
-                '<small class="muted">Como guía, 120-160 caracteres suele dar un buen contexto. Google puede recortar o generar su propio fragmento según la búsqueda. <span data-len-d></span></small>' +
+                '<small class="muted">Como guía, 120–160 caracteres suele dar un buen contexto. Google puede recortar o generar su propio fragmento según la búsqueda. <span data-len-d></span></small>' +
               '</label>' +
               '<div class="info-box">¿No sabes qué escribir todavía? Puedes dejar los campos vacíos. Usaremos automáticamente el nombre y la descripción de tu negocio para que el catálogo conserve información básica.</div>' +
             '</div>' +
             '<div class="card">' +
               '<span class="kicker">IMAGEN AL COMPARTIR</span>' +
               '<h3>Imagen para redes y mensajería</h3>' +
-              '<p class="muted">Puedes elegir una imagen especial para compartir. Si no eliges una, se usará la imagen destacada del catálogo si existe.</p>' +
-              '<b data-seo-img-state>' + (b.seo_image ? 'Imagen personalizada' : 'Sin imagen personalizada') + '</b>' +
-              '<div class="img-slot ' + (b.seo_image ? 'filled' : '') + '" data-seo-img style="max-width:320px;margin:12px 0">' + (b.seo_image ? '<img src="' + esc(b.seo_image) + '">' : '<span>+</span>') + '</div>' +
-              '<p class="muted">Recomendado: 1200 × 630 px. JPG, PNG o WebP, máximo 5 MB.</p>' +
-              '<button type="button" class="btn ghost small" data-seo-add>Agregar imagen</button>' +
+              '<p class="muted">Puedes elegir una imagen especial para compartir. Si no eliges una, solo utilizaremos la imagen destacada de tu catálogo si existe.</p>' +
+              '<div data-seo-empty' + (b.seo_image ? ' hidden' : '') + '>' +
+                '<b>Sin imagen personalizada</b>' +
+                '<p class="muted">Puedes agregar una si quieres controlar exactamente qué imagen se comparte.</p>' +
+              '</div>' +
+              '<div class="img-slot ' + (b.seo_image ? 'filled' : '') + '" data-seo-img style="max-width:320px;margin:10px 0"' + (b.seo_image ? '' : ' hidden') + '>' + (b.seo_image ? '<img src="' + esc(b.seo_image) + '">' : '<span>+</span>') + '</div>' +
+              '<b>Agregar imagen personalizada</b>' +
+              '<p class="muted">Recomendado: 1200 × 630 px. JPG, PNG o WebP · máximo 5 MB. La optimizamos y la guardamos como JPEG progresivo 1200 × 630.</p>' +
+              '<button type="button" class="btn soft small" data-seo-add>Agregar imagen</button>' +
               '<div class="auto-card"><div class="auto-thumb">' + (autoImg ? '<img src="' + esc(autoImg) + '">' : '🖼️') + '</div>' +
                 '<div><span class="kicker">RESPALDO AUTOMÁTICO <span class="tag">AUTOMÁTICA</span></span><b>Imagen destacada del catálogo</b>' +
-                '<p class="muted">Como respaldo, se usará automáticamente la imagen destacada de tu catálogo cuando una plataforma solicite una imagen.</p></div></div>' +
+                '<p class="muted">Como no tienes una imagen SEO personalizada, esta imagen destacada se utilizará automáticamente cuando una plataforma solicite una imagen para tu catálogo.</p></div></div>' +
               '<div class="set-actions"><button type="button" class="btn primary" data-save>Guardar SEO</button></div>' +
             '</div>' +
           '</div>' +
@@ -916,23 +922,26 @@
             '<div class="card"><span class="kicker">VISTA PREVIA</span><h3>Así puede verse tu enlace</h3>' +
               '<p class="muted">La tarjeta cambia en tiempo real mientras escribes. Cada plataforma decide el diseño final.</p>' +
               '<div class="social-preview"><div class="sp-img" data-sp-img>' + (prevImg ? '<img src="' + esc(prevImg) + '">' : '<span>Sin imagen</span>') + '</div>' +
-                '<div class="sp-body"><small data-sp-url>' + esc(CW.publicHost) + '</small><b data-sp-title>' + esc(b.seo_title || b.name) + '</b><span data-sp-desc>' + esc(b.seo_description || b.description || '') + '</span></div></div>' +
+                '<div class="sp-body"><small data-sp-url>' + esc(domain) + '</small><b data-sp-title>' + esc(b.seo_title || b.name) + '</b><span data-sp-desc>' + esc(b.seo_description || b.description || '') + '</span></div></div>' +
             '</div>' +
-            '<div class="card"><b>Hacemos la parte técnica</b><p class="muted">Generamos automáticamente el título, la meta descripción, la URL canónica, Open Graph y la tarjeta grande para X/Twitter. Tú solo completas el contenido.</p></div>' +
-            '<div class="card note-card warn"><b>Si cambias el texto o la imagen</b><p class="muted">En tu catálogo el cambio queda activo al guardar. Google y las redes sociales pueden seguir mostrando durante un tiempo una versión anterior por sus cachés propias.</p></div>' +
+            '<div class="card"><b>Hacemos la parte técnica</b><p class="muted">Generamos automáticamente título, meta descripción, URL canónica, Open Graph y tarjeta grande para X/Twitter. Tú solo completas el contenido.</p></div>' +
+            '<div class="card note-card warn"><b>Si cambias el texto o la imagen</b><p class="muted">En tu catálogo el cambio queda activo al guardar. Google y las redes sociales pueden seguir mostrando durante un tiempo una versión anterior porque usan cachés propias. No necesitas limpiar la caché de la aplicación.</p></div>' +
           '</aside>' +
         '</div>';
     }
 
     var hero = SET_HERO[id] || [title, ''];
     view.innerHTML =
+      '<div class="crumb-mini"><span>' + t('set.title') + '</span> / <span>' + esc(hero[0]) + '</span></div>' +
       '<section class="set-hero"><h1>' + esc(hero[0]) + '</h1>' + (hero[1] ? '<p>' + esc(hero[1]) + '</p>' : '') + '</section>' +
-      '<button type="button" class="btn ghost small set-back" data-back>← ' + t('common.back') + ' ' + t('set.title').toLowerCase() + '</button>' +
+      '<button type="button" class="btn ghost small set-back" data-back><span aria-hidden="true">‹</span> Volver a configuración</button>' +
       body +
+      '<div class="set-back-row"><button type="button" class="btn ghost small" data-back3><span aria-hidden="true">‹</span> Volver a configuración</button></div>' +
       '<div class="form-sticky"><button type="button" class="btn ghost" data-back2>' + t('common.back') + '</button><button type="button" class="btn primary" data-save>✓ ' + t('set.save') + '</button></div>';
 
     $('[data-back]', view).addEventListener('click', function () { location.hash = '#settings'; });
     $('[data-back2]', view).addEventListener('click', function () { location.hash = '#settings'; });
+    var b3 = $('[data-back3]', view); if (b3) b3.addEventListener('click', function () { location.hash = '#settings'; });
 
     function val(f) { var el = $('[data-f="' + f + '"]', view); return el ? el.value : ''; }
 
@@ -1005,7 +1014,8 @@
         openImagePicker(1, function (u) {
           if (!u[0]) return;
           view._seoImg = u[0];
-          var si = $('[data-seo-img]', view); if (si) { si.innerHTML = '<img src="' + esc(u[0]) + '">'; si.classList.add('filled'); }
+          var si = $('[data-seo-img]', view); if (si) { si.innerHTML = '<img src="' + esc(u[0]) + '">'; si.classList.add('filled'); si.hidden = false; }
+          var se = $('[data-seo-empty]', view); if (se) se.hidden = true;
           var spi = $('[data-sp-img]', view); if (spi) spi.innerHTML = '<img src="' + esc(u[0]) + '">';
           var stt = $('[data-seo-img-state]', view); if (stt) stt.textContent = 'Imagen personalizada';
         });
@@ -1422,11 +1432,20 @@
   // ---------------------------------------------------------------------
   // Sidebar móvil
   // ---------------------------------------------------------------------
-  function closeSidebar() { document.body.classList.remove('sidebar-open'); }
+  function closeSidebar() {
+    document.body.classList.remove('sidebar-open');
+    var bd = document.querySelector('[data-sidebar-backdrop]');
+    if (bd) bd.hidden = true;
+  }
   document.addEventListener('DOMContentLoaded', function () {
     var open = $('[data-sidebar-open]'), close = $('[data-sidebar-close]');
-    if (open) open.addEventListener('click', function () { document.body.classList.add('sidebar-open'); });
+    var bd = $('[data-sidebar-backdrop]');
+    if (open) open.addEventListener('click', function () {
+      document.body.classList.add('sidebar-open');
+      if (bd) bd.hidden = false;
+    });
     if (close) close.addEventListener('click', closeSidebar);
+    if (bd) bd.addEventListener('click', closeSidebar);
     var lo = $('[data-logout]');
     if (lo) lo.addEventListener('click', function (e) { e.preventDefault(); CW.store.signOut().then(function () { location.replace(CW.url('login.html')); }); });
     window.addEventListener('cw:lang', function () { if (state.biz) route(); });

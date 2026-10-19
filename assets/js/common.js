@@ -309,7 +309,7 @@
     countryOptions: function (selected) {
       return Object.keys(COUNTRY_CODES).map(function (c) {
         return '<option value="' + c + '"' + (c === selected ? ' selected' : '') + '>' +
-          COUNTRY_CODES[c].flag + ' ' + COUNTRY_CODES[c].name + ' (' + COUNTRY_CODES[c].dial + ')</option>';
+          COUNTRY_CODES[c].name + ' (' + COUNTRY_CODES[c].dial + ')</option>';
       }).join('');
     }
   };

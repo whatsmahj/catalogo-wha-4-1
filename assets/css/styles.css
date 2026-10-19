@@ -422,6 +422,50 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 .len-badge.long { background: var(--bad-soft); color: var(--bad); }
 .row-between-inline { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
 .set-actions { display: flex; justify-content: flex-end; margin-top: 16px; }
+.btn.soft { background: var(--brand-soft); color: var(--brand); border-color: transparent; }
+.btn.soft:hover { background: #e9dcf8; color: var(--brand); }
+.set-back-row { margin-top: 22px; }
+
+/* ==========================================================================
+   Panel y acceso: responsive
+   ========================================================================== */
+.sidebar-backdrop { position: fixed; inset: 0; background: rgba(20,16,40,.45); z-index: 110; }
+
+@media (max-width: 1000px) {
+  .app-view { padding: 16px 14px 34px; }
+  .app-topbar { padding: 10px 14px; gap: 8px; }
+  .view-head { flex-direction: column; align-items: stretch; gap: 12px; }
+  .head-actions { flex-wrap: wrap; }
+  .head-actions .search { width: 100%; }
+  .stat-cards { grid-template-columns: repeat(2, 1fr); }
+  .quick-grid { grid-template-columns: 1fr; }
+  .form-grid, .home-grid, .two-col, .plan-row, .set-grid { grid-template-columns: 1fr; }
+  .hero-panel { padding: 20px; }
+  .form-sticky { padding: 10px 0; }
+  .set-hero { padding: 20px; }
+  .app-view .card { padding: 18px; }
+}
+@media (max-width: 560px) {
+  .topbar-actions .btn { display: none; }
+  .stat-cards { grid-template-columns: 1fr; }
+  .form-sticky { flex-direction: column-reverse; }
+  .form-sticky .btn { width: 100%; }
+}
+
+/* Acceso (login) */
+@media (max-width: 1000px) {
+  .auth-main { padding: 22px 18px 40px; justify-content: flex-start; }
+  .auth-topbar { margin-bottom: 8px; justify-content: space-between; align-items: center; }
+  .auth-card { width: 100%; }
+}
+@media (max-width: 480px) {
+  .auth-main { padding: 16px 14px 32px; }
+  .auth-tabs { margin-bottom: 18px; }
+  .auth-card h1 { font-size: 1.5rem; }
+}
+.crumb-mini { margin-bottom: 10px; }
+.len-badge.ok::before { content: '●'; margin-inline-end: 5px; font-size: .8em; }
+.len-badge.short::before, .len-badge.long::before { content: '●'; margin-inline-end: 5px; font-size: .8em; }
 
 @media (max-width: 1000px) {
   .set-two { grid-template-columns: 1fr; }
