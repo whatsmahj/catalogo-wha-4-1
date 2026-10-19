@@ -192,31 +192,51 @@
 
   function cardHTML(p) {
     var c = catOf(p.category_id);
+    var isService = p.kind === 'service';
+    var hasPromo = !isService && Number(p.promo_price) > 0 && Number(p.promo_price) < Number(p.price);
     var img = (p.images && p.images[0]) ? '<img src="' + esc(p.images[0]) + '" alt="' + esc(p.name) + '" loading="lazy">' : '<div class="ph-img">🖼️</div>';
     var inCart = S.cart.find(function (x) { return x.id === p.id; });
-    var badge = p.kind === 'service' ? '<span class="card-chip top">🔧 ' + t('prod.type.service') + '</span>' : '';
-    var cat = c ? '<span class="card-chip bottom">' + esc(c.name) + '</span>' : '';
-    var lines = '';
-    if (p.kind === 'service') {
-      lines += '<div class="card-line">🏷️ ' + t('cat.public.category') + ': ' + esc(c ? c.name : '—') + '</div>';
-      lines += '<div class="card-line">💰 ' + t('common.price') + ': ' + (Number(p.price) > 0 ? money(p.price, S.biz.currency) : t('cat.public.consult')) + '</div>';
-      if (p.duration) lines += '<div class="card-line">⏱ ' + t('cat.public.duration') + ': ' + esc(p.duration) + '</div>';
-      if (p.modality) lines += '<div class="card-line">📍 ' + t('cat.public.modality') + ': ' + esc(p.modality) + '</div>';
-      lines += '<div class="card-line ok">✅ ' + t('cat.public.available') + '</div>';
+
+    var media = '<div class="pc-media" data-detail="' + p.id + '">' + img +
+      (isService ? '<span class="pc-kind">🔧 ' + t('prod.type.service') + '</span>' : '') +
+      (c ? '<span class="pc-cat">' + esc(c.name) + '</span>' : '') +
+      (hasPromo ? '<span class="pc-off">-' + CW.api.pct(p.promo_price, p.price) + '%</span>' : '') +
+      (inCart ? '<span class="pc-incart">✓ ' + inCart.qty + '</span>' : '') +
+      '</div>';
+
+    var priceHtml;
+    if (isService) {
+      priceHtml = Number(p.price) > 0
+        ? '<div class="pc-price"><b>' + money(p.price, S.biz.currency) + '</b></div>'
+        : '<div class="pc-price consult"><b>' + t('cat.public.consult') + '</b></div>';
+    } else if (hasPromo) {
+      priceHtml = '<div class="pc-price"><b>' + money(p.promo_price, S.biz.currency) + '</b><s>' + money(p.price, S.biz.currency) + '</s></div>';
     } else {
-      lines += '<div class="card-line">🏷️ ' + t('cat.public.category') + ': ' + esc(c ? c.name : '—') + '</div>';
-      lines += '<div class="card-line">💰 ' + t('common.price') + ': ' + money(p.price, S.biz.currency) + '</div>';
-      if (Number(p.promo_price) > 0 && Number(p.promo_price) < Number(p.price)) {
-        lines += '<div class="card-line promo">🎁 ' + t('cat.public.offer') + ': ' + money(p.promo_price, S.biz.currency) + '</div>';
-        lines += '<div class="card-line save">✅ ' + t('cat.public.save') + ': ' + CW.api.pct(p.promo_price, p.price) + '%</div>';
-      }
+      priceHtml = '<div class="pc-price"><b>' + money(p.price, S.biz.currency) + '</b></div>';
     }
-    var btn = p.kind === 'service' ? (p.bookable ? t('cat.public.book') : t('cat.public.request')) : t('cat.public.add');
-    return '<article class="item-card">' +
-      '<div class="item-media" data-detail="' + p.id + '">' + img + badge + cat + (inCart ? '<span class="in-cart">✕</span>' : '') + '</div>' +
-      '<div class="item-body"><h3>' + esc(p.name) + '</h3>' + lines +
-      '<div class="item-actions"><button class="btn primary small" data-add="' + p.id + '">' + btn + '</button>' +
-      '<button class="btn ghost small" data-detail="' + p.id + '">' + t('cat.public.details') + '</button></div></div></article>';
+
+    var specs = '';
+    if (isService) {
+      specs = '<div class="pc-specs">' +
+        (p.duration ? '<span>⏱ ' + esc(p.duration) + '</span>' : '') +
+        (p.modality ? '<span>📍 ' + esc(p.modality) + '</span>' : '') +
+        '<span class="ok">✅ ' + t('cat.public.available') + '</span></div>';
+    } else if (hasPromo) {
+      specs = '<div class="pc-specs"><span class="save">🎁 ' + t('cat.public.save') + ' ' + CW.api.pct(p.promo_price, p.price) + '%</span></div>';
+    }
+
+    var btn = isService ? (p.bookable ? t('cat.public.book') : t('cat.public.request')) : t('cat.public.add');
+
+    return '<article class="pc ' + (isService ? 'pc--service' : 'pc--product') + '">' +
+      media +
+      '<div class="pc-body">' +
+        '<h3 class="pc-name">' + esc(p.name) + '</h3>' +
+        priceHtml + specs +
+        '<div class="pc-actions">' +
+          '<button class="btn primary small" data-add="' + p.id + '">' + btn + '</button>' +
+          '<button class="btn ghost small" data-detail="' + p.id + '">' + t('cat.public.details') + '</button>' +
+        '</div>' +
+      '</div></article>';
   }
 
   // ---- Ficha de detalle ----------------------------------------------
@@ -398,6 +418,13 @@
       }).catch(function () { window.open(CW.api.waLink(S.biz.whatsapp, msg), '_blank'); });
     });
   }
+
+  // ---- API para otros módulos (p. ej. el asistente) -------------------
+  CW.catalogData = function () {
+    return { biz: S.biz, products: S.products, cats: S.cats, cart: S.cart };
+  };
+  CW.catalogAdd = function (id) { addToCart(id); };
+  CW.catalogOpen = function () { openCart(); };
 
   // ---- Init -----------------------------------------------------------
   document.addEventListener('DOMContentLoaded', function () {

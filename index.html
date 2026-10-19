@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Catalogo Wha · Tu catálogo online con pedidos por WhatsApp</title>
-<meta name="description" content="Crea el catálogo de tu negocio en minutos y recibe los pedidos por WhatsApp. Sin comisiones, en español, francés y árabe.">
+<meta name="description" content="Reúne tus productos en un enlace y recibe los pedidos por WhatsApp. Sin comisiones, en español, francés y árabe.">
 <meta name="theme-color" content="#5B1A80">
 <link rel="canonical" href="https://tudominio.com/">
 <link rel="alternate" hreflang="es" href="https://tudominio.com/?lang=es">
@@ -16,7 +16,7 @@
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="Catalogo Wha · Tu catálogo online con pedidos por WhatsApp">
-<meta property="og:description" content="Crea tu catálogo y recibe pedidos por WhatsApp. Sin comisiones.">
+<meta property="og:description" content="Reúne tus productos en un enlace y recibe los pedidos por WhatsApp. Sin comisiones.">
 <meta property="og:image" content="https://tudominio.com/assets/og.png">
 <meta property="og:url" content="https://tudominio.com/">
 <meta name="twitter:card" content="summary_large_image">
@@ -25,6 +25,7 @@
 
 <link rel="preload" as="style" href="assets/css/styles.css?v=4">
 <link rel="stylesheet" href="assets/css/styles.css?v=4">
+<link rel="stylesheet" href="assets/css/landing.css?v=1">
 
 <script type="application/ld+json">
 {
@@ -32,67 +33,66 @@
   "@graph": [
     { "@type": "Organization", "name": "Catalogo Wha", "url": "https://tudominio.com/", "logo": "https://tudominio.com/assets/og.png" },
     { "@type": "WebSite", "name": "Catalogo Wha", "url": "https://tudominio.com/", "inLanguage": ["es","fr","ar"] },
-    { "@type": "SoftwareApplication", "name": "Catalogo Wha", "applicationCategory": "BusinessApplication", "operatingSystem": "Web", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "MAD" } },
+    { "@type": "SoftwareApplication", "name": "Catalogo Wha", "applicationCategory": "BusinessApplication", "operatingSystem": "Web", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } },
     { "@type": "FAQPage", "mainEntity": [
-      { "@type": "Question", "name": "¿Es gratis?", "acceptedAnswer": { "@type": "Answer", "text": "Sí, el plan gratuito incluye todo lo esencial para empezar a recibir pedidos." } },
-      { "@type": "Question", "name": "¿Hay comisiones por venta?", "acceptedAnswer": { "@type": "Answer", "text": "No. El pedido llega a tu WhatsApp y tú cobras directamente al cliente." } },
-      { "@type": "Question", "name": "¿En qué idiomas funciona?", "acceptedAnswer": { "@type": "Answer", "text": "En español, francés y árabe, con diseño adaptado a la derecha para el árabe." } }
+      { "@type": "Question", "name": "¿Necesito una página web?", "acceptedAnswer": { "@type": "Answer", "text": "No. Con Catalogo Wha tu negocio se publica en una dirección sencilla y lista para compartir." } },
+      { "@type": "Question", "name": "¿Mis clientes tienen que registrarse?", "acceptedAnswer": { "@type": "Answer", "text": "No. Navegan, eligen y envían su pedido sin crear ninguna cuenta." } },
+      { "@type": "Question", "name": "¿Cobran comisión por mis ventas?", "acceptedAnswer": { "@type": "Answer", "text": "No. La venta se cierra directamente contigo." } }
     ]}
   ]
 }
 </script>
 </head>
-<body class="landing">
+<body class="landing lp">
 <a class="skip-link" href="#main">Saltar al contenido</a>
 
 <!-- ======================= HEADER ======================= -->
-<header class="site-header">
-  <div class="wrap header-inner">
-    <a class="brand" href="./" aria-label="Catalogo Wha">
-      <span class="brand-mark">🛒</span>
-      <span class="brand-name">Catalogo<span>Wha</span></span>
+<header class="lp-header">
+  <div class="lp-wrap lp-header-inner">
+    <a class="lp-logo" href="./" aria-label="Catalogo Wha">
+      <span class="mark">🛒</span>
+      <span>Catalogo<span class="accent">Wha</span></span>
     </a>
-    <nav class="site-nav" aria-label="Principal">
+    <nav class="lp-nav" aria-label="Principal">
       <a href="#funciones" data-i18n="landing.features.title">Funciones</a>
       <a href="#como" data-i18n="landing.how.title">Cómo funciona</a>
-      <a href="#precios" data-i18n="landing.pricing.title">Precios</a>
+      <a href="#planes" data-i18n="landing.pricing.title">Precios</a>
       <a href="#faq" data-i18n="landing.faq.title">FAQ</a>
     </nav>
-    <div class="header-actions">
+    <div class="lp-header-actions">
       <div class="lang-switch" data-lang-switch></div>
-      <a class="btn ghost" href="login.html" data-i18n="login.signin">Iniciar sesión</a>
-      <a class="btn primary" href="login.html#signup" data-i18n="landing.hero.cta1">Crear mi catálogo</a>
+      <a class="btn ghost small" href="login.html" data-i18n="login.signin">Iniciar sesión</a>
+      <a class="btn primary small" href="login.html#signup" data-i18n="landing.hero.cta1">Crear mi catálogo</a>
     </div>
   </div>
 </header>
 
 <main id="main">
+
   <!-- ======================= HERO ======================= -->
-  <section class="hero">
-    <div class="wrap hero-grid">
-      <div class="hero-copy">
-        <span class="eyebrow">✨ WhatsApp · Catálogo · Sin comisiones</span>
-        <h1 data-i18n="landing.hero.title">Tu catálogo online, pedidos por WhatsApp</h1>
-        <p class="lead" data-i18n="landing.hero.sub">Crea el catálogo de tu negocio en minutos. Comparte un enlace y recibe los pedidos directamente en tu WhatsApp, sin comisiones.</p>
-        <div class="hero-cta">
+  <section class="lp-hero">
+    <div class="lp-wrap lp-hero-grid">
+      <div class="lp-hero-copy">
+        <span class="lp-eyebrow">CATÁLOGO ONLINE · PEDIDOS POR WHATSAPP</span>
+        <h1 class="lp-h1" data-i18n="landing.hero.title">Tu catálogo online, pedidos por WhatsApp</h1>
+        <p class="lp-lead" data-i18n="landing.hero.sub">Crea el catálogo de tu negocio en minutos. Comparte un enlace y recibe los pedidos directamente en tu WhatsApp, sin comisiones.</p>
+        <ul class="lp-bullets">
+          <li>Sin tarjeta para empezar</li>
+          <li>Cero comisiones por venta</li>
+        </ul>
+        <div class="lp-cta-row">
           <a class="btn primary lg" href="login.html#signup" data-i18n="landing.hero.cta1">Crear mi catálogo</a>
           <a class="btn ghost lg" href="catalogo.html?b=demo" data-i18n="landing.hero.cta2">Ver un ejemplo</a>
         </div>
-        <ul class="hero-points">
-          <li>✓ <span data-i18n="landing.value.1">Listo en minutos</span></li>
-          <li>✓ <span data-i18n="landing.value.2">Sin comisiones</span></li>
-          <li>✓ <span data-i18n="landing.value.3">En 3 idiomas</span></li>
-        </ul>
       </div>
-      <!-- Maqueta de móvil solo CSS -->
-      <div class="hero-phone" aria-hidden="true">
+      <div class="lp-mock">
         <div class="phone">
           <div class="phone-notch"></div>
           <div class="phone-screen">
             <div class="mini-hero">
               <div class="mini-logo">M</div>
-              <div class="mini-title">Marmol</div>
-              <div class="mini-sub">Todo para tu hogar</div>
+              <div class="mini-title">Mi negocio</div>
+              <div class="mini-sub">Productos y servicios</div>
             </div>
             <div class="mini-search"></div>
             <div class="mini-grid">
@@ -104,182 +104,310 @@
             <div class="mini-wa">🟢 Pedido enviado por WhatsApp</div>
           </div>
         </div>
+        <p class="lp-mock-caption">Vista de ejemplo · Catálogo + WhatsApp</p>
       </div>
     </div>
   </section>
 
   <!-- ======================= PROBLEMA ======================= -->
-  <section class="section">
-    <div class="wrap">
-      <h2 class="center" data-i18n="landing.problem.title">Deja de perder pedidos en el chat</h2>
-      <div class="compare">
-        <article class="card problem">
-          <div class="pill bad">✕</div>
-          <h3 data-i18n="landing.problem.a">Pedidos desordenados por chat</h3>
-          <p data-i18n="landing.problem.a.desc">Mensajes sueltos, precios que se olvidan y clientes que se cansan de esperar.</p>
+  <section class="lp-section lp-alt">
+    <div class="lp-wrap lp-center">
+      <span class="lp-label" data-i18n="landing.problem.title">EL PROBLEMA</span>
+      <h2 class="lp-h2" data-i18n="landing.problem.title">Deja de perder pedidos en el chat</h2>
+      <p class="lp-sub">Mostrar cada artículo y juntar cantidades entre mensajes quita tiempo. Con un catálogo, tus clientes eligen antes de escribirte.</p>
+      <div class="lp-compare">
+        <article class="lp-card">
+          <span class="lp-tag bad">✕ Sin un catálogo</span>
+          <div class="mock-row"><div class="phone"><div class="phone-screen">
+            <div class="mini-line"></div><div class="mini-line short"></div><div class="mini-line"></div><div class="mini-line short"></div>
+          </div></div></div>
+          <ul class="lp-list bad">
+            <li>Envías fotos y precios sueltos.</li>
+            <li>Repites la misma información en cada consulta.</li>
+            <li>Juntas productos y cantidades entre varios mensajes.</li>
+          </ul>
         </article>
-        <article class="card solution">
-          <div class="pill good">✓</div>
-          <h3 data-i18n="landing.problem.b">Catálogo ordenado y siempre listo</h3>
-          <p data-i18n="landing.problem.b.desc">Un enlace con tus productos, precios e imágenes. El cliente arma su pedido y te lo envía.</p>
+        <article class="lp-card">
+          <span class="lp-tag good">✓ Con tu catálogo</span>
+          <div class="mock-row"><div class="phone"><div class="phone-screen">
+            <div class="mini-grid"><div class="mini-card"><div class="mini-img"></div><div class="mini-line"></div></div><div class="mini-card"><div class="mini-img alt"></div><div class="mini-line"></div></div></div>
+            <div class="mini-wa">🟢 Pedido listo</div>
+          </div></div></div>
+          <ul class="lp-list good">
+            <li>Compartes todo en un solo enlace.</li>
+            <li>Tus clientes ven fotos, precios y descripciones.</li>
+            <li>Recibes el pedido con cantidades y total.</li>
+          </ul>
         </article>
       </div>
     </div>
   </section>
 
   <!-- ======================= VALOR ======================= -->
-  <section class="section alt">
-    <div class="wrap">
-      <h2 class="center" data-i18n="landing.value.title">Todo lo que necesitas para vender</h2>
-      <div class="grid-3">
-        <article class="card value"><div class="thumb t1"></div><h3 data-i18n="landing.value.1">Listo en minutos</h3><p data-i18n="landing.value.1.desc">Sin instalar nada, sin tarjetas, sin complicaciones.</p></article>
-        <article class="card value"><div class="thumb t2"></div><h3 data-i18n="landing.value.2">Sin comisiones</h3><p data-i18n="landing.value.2.desc">Tú decides cómo cobrar. El pedido llega a tu WhatsApp.</p></article>
-        <article class="card value"><div class="thumb t3"></div><h3 data-i18n="landing.value.3">En 3 idiomas</h3><p data-i18n="landing.value.3.desc">Español, francés y árabe con diseño adaptado.</p></article>
+  <section class="lp-section">
+    <div class="lp-wrap lp-center">
+      <span class="lp-label">SIN COMPLICACIONES</span>
+      <h2 class="lp-h2" data-i18n="landing.value.title">Todo lo que necesitas para vender</h2>
+      <p class="lp-sub">Muestra tus artículos y recibe pedidos por WhatsApp. No necesitas programar ni contratar a nadie para tener tu catálogo listo.</p>
+      <div class="lp-cards3">
+        <article class="lp-card"><div class="lp-icon">🔗</div><h3 data-i18n="landing.value.1">Listo en minutos</h3><p data-i18n="landing.value.1.desc">Sin instalar nada, sin tarjetas, sin complicaciones.</p></article>
+        <article class="lp-card"><div class="lp-icon">💸</div><h3 data-i18n="landing.value.2">Sin comisiones</h3><p data-i18n="landing.value.2.desc">Tú decides cómo cobrar. El pedido llega a tu WhatsApp.</p></article>
+        <article class="lp-card"><div class="lp-icon">🌍</div><h3 data-i18n="landing.value.3">En 3 idiomas</h3><p data-i18n="landing.value.3.desc">Español, francés y árabe con diseño adaptado.</p></article>
       </div>
     </div>
   </section>
 
-  <!-- ======================= CÓMO FUNCIONA ======================= -->
-  <section class="section" id="como">
-    <div class="wrap">
-      <h2 class="center" data-i18n="landing.how.title">Cómo funciona</h2>
-      <div class="grid-3 steps">
-        <article class="step c1"><span class="step-n">1</span><h3 data-i18n="landing.how.1">Crea tu cuenta</h3><p data-i18n="landing.how.1.desc">Regístrate y configura tu negocio en el asistente.</p></article>
-        <article class="step c2"><span class="step-n">2</span><h3 data-i18n="landing.how.2">Añade productos</h3><p data-i18n="landing.how.2.desc">Sube fotos, precios y categorías de productos y servicios.</p></article>
-        <article class="step c3"><span class="step-n">3</span><h3 data-i18n="landing.how.3">Comparte y vende</h3><p data-i18n="landing.how.3.desc">Comparte tu enlace y recibe pedidos por WhatsApp.</p></article>
+  <!-- ======================= PASOS ======================= -->
+  <section class="lp-section lp-alt" id="como">
+    <div class="lp-wrap lp-center">
+      <span class="lp-label" data-i18n="landing.how.title">CÓMO FUNCIONA</span>
+      <h2 class="lp-h2" data-i18n="landing.how.title">Cómo funciona</h2>
+      <p class="lp-sub">Crea tu catálogo, añade tus artículos y comparte el enlace. Tus clientes arman su pedido y continúan por WhatsApp.</p>
+      <div class="lp-steps">
+        <article class="lp-step"><span class="lp-step-n">1</span><h3 data-i18n="landing.how.1">Crea tu cuenta</h3><p data-i18n="landing.how.1.desc">Regístrate y configura tu negocio en el asistente.</p></article>
+        <article class="lp-step"><span class="lp-step-n">2</span><h3 data-i18n="landing.how.2">Añade productos</h3><p data-i18n="landing.how.2.desc">Sube fotos, precios y categorías de productos y servicios.</p></article>
+        <article class="lp-step"><span class="lp-step-n">3</span><h3 data-i18n="landing.how.3">Comparte y vende</h3><p data-i18n="landing.how.3.desc">Comparte tu enlace y recibe pedidos por WhatsApp.</p></article>
       </div>
     </div>
   </section>
 
   <!-- ======================= FUNCIONES ======================= -->
-  <section class="section alt" id="funciones">
-    <div class="wrap">
-      <h2 class="center" data-i18n="landing.features.title">Funciones</h2>
-      <div class="feature-grid">
-        <div class="feature"><span>🧾</span><h4>Pedidos por WhatsApp</h4><p>Mensaje estructurado y listo para enviar.</p></div>
-        <div class="feature"><span>🛍️</span><h4>Productos y servicios</h4><p>Tarjetas distintas para cada tipo.</p></div>
-        <div class="feature"><span>🏷️</span><h4>Categorías</h4><p>Organiza y filtra sin mezclar tipos.</p></div>
-        <div class="feature"><span>🖼️</span><h4>Biblioteca de imágenes</h4><p>Hasta 5 fotos por artículo.</p></div>
-        <div class="feature"><span>📅</span><h4>Reservas y agenda</h4><p>Huecos calculados según tu horario.</p></div>
-        <div class="feature"><span>📊</span><h4>Ventas y CSV</h4><p>Facturación, ticket medio y exportación.</p></div>
-        <div class="feature"><span>🎨</span><h4>Tu marca</h4><p>Color y logo propios del catálogo.</p></div>
-        <div class="feature"><span>🌍</span><h4>Multiidioma</h4><p>Español, francés y árabe con RTL.</p></div>
+  <section class="lp-section" id="funciones">
+    <div class="lp-wrap lp-center">
+      <span class="lp-label">FUNCIONES</span>
+      <h2 class="lp-h2" data-i18n="landing.features.title">Funciones</h2>
+      <p class="lp-sub">Publica tus artículos, facilita la compra y gestiona todo desde un solo panel.</p>
+      <div class="lp-cards4">
+        <article class="lp-card"><div class="lp-icon">🏪</div><h3>Catálogo público</h3><p>Tu negocio en una dirección sencilla y fácil de compartir.</p></article>
+        <article class="lp-card"><div class="lp-icon">🗂️</div><h3>Categorías y búsqueda</h3><p>Tus clientes encuentran lo que buscan sin repasar conversaciones.</p></article>
+        <article class="lp-card"><div class="lp-icon">🛒</div><h3>Carrito integrado</h3><p>Revisan cantidades y total, y envían el pedido por WhatsApp.</p></article>
+        <article class="lp-card"><div class="lp-icon">🧾</div><h3>Pedidos registrados</h3><p>Guardamos el pedido antes de abrir WhatsApp, para que no dependas solo del chat.</p></article>
+        <article class="lp-card"><div class="lp-icon">🚚</div><h3>Entrega configurable</h3><p>Retiro, delivery o coordinación directa según tu negocio.</p></article>
+        <article class="lp-card"><div class="lp-icon">💳</div><h3>Formas de pago</h3><p>Indica si aceptas efectivo, transferencia o tarjeta.</p></article>
+        <article class="lp-card"><div class="lp-icon">💱</div><h3>Moneda del catálogo</h3><p>Publica precios en la moneda que corresponde a tu negocio.</p></article>
+        <article class="lp-card"><div class="lp-icon">📊</div><h3>Panel de administración</h3><p>Gestiona artículos, pedidos y ajustes desde un área privada.</p></article>
       </div>
     </div>
   </section>
 
-  <!-- ======================= DOS BLOQUES PARTIDOS ======================= -->
-  <section class="section">
-    <div class="wrap split">
-      <div class="split-copy">
-        <h3>Comparte un enlace, recibe pedidos</h3>
-        <p>Tu catálogo tiene su propia dirección. Envíala por WhatsApp, Instagram o donde quieras y tus clientes verán tus productos actualizados.</p>
+  <!-- ======================= CLIENTE ======================= -->
+  <section class="lp-section lp-alt">
+    <div class="lp-wrap lp-split">
+      <div class="lp-mock">
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="mini-hero"><div class="mini-logo">M</div><div class="mini-title">Mi negocio</div></div>
+            <div class="mini-grid">
+              <div class="mini-card"><div class="mini-img"></div><div class="mini-line"></div></div>
+              <div class="mini-card"><div class="mini-img alt"></div><div class="mini-line"></div></div>
+            </div>
+            <div class="mini-wa">🟢 Carrito · Enviar pedido</div>
+          </div>
+        </div>
       </div>
-      <div class="split-mock"><div class="phone small"><div class="phone-screen"><div class="mini-grid">
-        <div class="mini-card"><div class="mini-img"></div><div class="mini-line"></div></div>
-        <div class="mini-card"><div class="mini-img alt"></div><div class="mini-line"></div></div>
-      </div></div></div></div>
+      <div class="lp-split-copy">
+        <span class="lp-label">EXPERIENCIA DEL CLIENTE</span>
+        <h2 class="lp-h2 left">Tus clientes arman el pedido sin registrarse</h2>
+        <ul class="lp-check">
+          <li>Revisar productos y categorías.</li>
+          <li>Buscar por nombre.</li>
+          <li>Ver precios, imágenes y promociones.</li>
+          <li>Agregar al carrito y ajustar cantidades.</li>
+          <li>Elegir retiro o entrega.</li>
+          <li>Indicar una forma de pago.</li>
+          <li>Completar sus datos y enviar por WhatsApp.</li>
+        </ul>
+        <span class="lp-pill-note">Pedido sin registro</span>
+      </div>
     </div>
-    <div class="wrap split reverse">
-      <div class="split-mock"><div class="phone small"><div class="phone-screen"><div class="mini-hero"><div class="mini-logo">M</div><div class="mini-title">Mi negocio</div><div class="mini-sub">Tu marca, tu color</div></div><div class="mini-line"></div><div class="mini-line short"></div></div></div></div>
-      <div class="split-copy">
-        <h3>Con tu identidad</h3>
-        <p>Elige el color principal y sube tu logo. El catálogo se adapta a la imagen de tu negocio automáticamente.</p>
+  </section>
+
+  <!-- ======================= CONTROL ======================= -->
+  <section class="lp-section">
+    <div class="lp-wrap lp-split rev">
+      <div class="lp-split-copy">
+        <span class="lp-label">CONTROL DEL NEGOCIO</span>
+        <h2 class="lp-h2 left">Tú mantienes el control de tu negocio</h2>
+        <ul class="lp-check">
+          <li>Agrega, edita, activa o desactiva artículos.</li>
+          <li>Organiza categorías y promociones.</li>
+          <li>Configura retiro, delivery o coordinación por WhatsApp.</li>
+          <li>Consulta los pedidos guardados en tu panel.</li>
+          <li>Actualiza el estado y haz seguimiento.</li>
+          <li>Comparte una dirección fácil de recordar.</li>
+        </ul>
+        <span class="lp-pill-note">Sin comisión por ventas</span>
+      </div>
+      <div class="lp-mock">
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen" style="background:linear-gradient(160deg,#2a1140,#5B1A80)">
+            <div style="color:#fff;font-weight:800;font-size:.9rem;margin-bottom:10px">Pedidos</div>
+            <div class="mini-card" style="margin-bottom:8px"><div class="mini-line"></div><div class="mini-line short"></div></div>
+            <div class="mini-card" style="margin-bottom:8px"><div class="mini-line"></div><div class="mini-line short"></div></div>
+            <div class="mini-card"><div class="mini-line"></div><div class="mini-line short"></div></div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- ======================= TIPOS DE NEGOCIO ======================= -->
-  <section class="section alt">
-    <div class="wrap">
-      <h2 class="center" data-i18n="landing.types.title">Para todo tipo de negocio</h2>
-      <div class="types-grid">
-        <span>🛒 Tienda</span><span>💇 Peluquería</span><span>🍽️ Restaurante</span><span>🧺 Lavandería</span>
-        <span>🔧 Taller</span><span>🏠 Inmobiliaria</span><span>💐 Floristería</span><span>👗 Moda</span>
-        <span>📱 Electrónica</span><span>💊 Farmacia</span><span>🐾 Mascotas</span><span>🎂 Pastelería</span>
-        <span>🪚 Carpintería</span><span>🎨 Diseño</span><span>🚚 Reparto</span>
+  <section class="lp-section lp-alt">
+    <div class="lp-wrap lp-center">
+      <span class="lp-label">TIPOS DE NEGOCIO</span>
+      <h2 class="lp-h2" data-i18n="landing.types.title">Para todo tipo de negocio</h2>
+      <p class="lp-sub">Si vendes productos o servicios y atiendes a tus clientes por WhatsApp, tu catálogo tiene sitio aquí.</p>
+      <div class="lp-types">
+        <div class="lp-type"><span>🛒</span>Tienda</div>
+        <div class="lp-type"><span>👗</span>Moda</div>
+        <div class="lp-type"><span>👟</span>Calzado</div>
+        <div class="lp-type"><span>🧺</span>Abarrotes</div>
+        <div class="lp-type"><span>🧴</span>Limpieza</div>
+        <div class="lp-type"><span>💅</span>Belleza</div>
+        <div class="lp-type"><span>📱</span>Tecnología</div>
+        <div class="lp-type"><span>⚡</span>Electricidad</div>
+        <div class="lp-type"><span>🧸</span>Juguetes</div>
+        <div class="lp-type"><span>📚</span>Librería</div>
+        <div class="lp-type"><span>🐾</span>Mascotas</div>
+        <div class="lp-type"><span>⚽</span>Deportes</div>
+        <div class="lp-type"><span>🎨</span>Artesanía</div>
+        <div class="lp-type"><span>🎁</span>Regalos</div>
+        <div class="lp-type"><span>🚚</span>Distribución</div>
       </div>
     </div>
   </section>
 
   <!-- ======================= BANDA OSCURA ======================= -->
-  <section class="band">
-    <div class="wrap band-grid">
-      <div><span>01</span><h4>Regístrate gratis</h4><p>Sin tarjeta ni compromiso.</p></div>
-      <div><span>02</span><h4>Configura tu catálogo</h4><p>Productos, marca y horarios.</p></div>
-      <div><span>03</span><h4>Recibe pedidos</h4><p>Directo a tu WhatsApp.</p></div>
+  <section class="lp-dark">
+    <div class="lp-wrap lp-center">
+      <span class="lp-label">UNA DIFERENCIA CLAVE</span>
+      <h2 class="lp-h2">No necesitas una tienda online completa</h2>
+      <p class="lp-sub">Una tienda tradicional implica más configuración y mantenimiento del que necesitas para empezar. Nosotros nos centramos en lo esencial.</p>
+      <div class="lp-band">
+        <div><div class="lp-band-n">01</div><h4>Mostrar tus artículos</h4><p>Un catálogo claro con fotos, precios y categorías.</p></div>
+        <div><div class="lp-band-n">02</div><h4>Recibir el pedido</h4><p>El cliente arma su pedido y lo envía en un clic.</p></div>
+        <div><div class="lp-band-n">03</div><h4>Continuar por WhatsApp</h4><p>Cierras la conversación y el pago directamente con él.</p></div>
+      </div>
     </div>
   </section>
 
-  <!-- ======================= PRECIOS ======================= -->
-  <section class="section" id="precios">
-    <div class="wrap">
-      <h2 class="center" data-i18n="landing.pricing.title">Precios simples</h2>
-      <div class="pricing">
-        <article class="card price-card featured">
+  <!-- ======================= PLANES ======================= -->
+  <section class="lp-section" id="planes">
+    <div class="lp-wrap lp-center">
+      <span class="lp-label">PLANES</span>
+      <h2 class="lp-h2" data-i18n="landing.pricing.title">Precios simples</h2>
+      <p class="lp-sub">Elige el plan que se ajuste a tu negocio. Puedes cambiarlo cuando quieras y no cobramos comisión por tus ventas.</p>
+      <div class="lp-plans">
+        <article class="lp-plan">
           <h3 data-i18n="landing.pricing.free">Plan Gratuito</h3>
-          <div class="price">0 <small>MAD</small></div>
-          <p data-i18n="landing.pricing.free.desc">Todo lo esencial para empezar</p>
+          <p class="plan-for">Para empezar sin pagar</p>
+          <div class="lp-price"><b>USD 0</b><small>para comenzar</small></div>
+          <div class="limit">Hasta 15 productos o servicios</div>
           <ul>
-            <li>✓ Hasta 15 productos</li><li>✓ 100 MB de imágenes</li><li>✓ Pedidos por WhatsApp</li>
-            <li>✓ 3 idiomas</li><li>✓ Reservas y agenda</li>
+            <li>Negocio y catálogo principal</li>
+            <li>Hasta 5 imágenes por artículo</li>
+            <li>Categorías de producto y servicio</li>
+            <li>Catálogo público con enlace</li>
+            <li>Carrito y pedido por WhatsApp</li>
+            <li>Registro interno de pedidos</li>
+            <li>Moneda configurable</li>
+            <li>Español, francés y árabe</li>
           </ul>
-          <a class="btn primary" href="login.html#signup" data-i18n="landing.pricing.cta">Empezar gratis</a>
+          <div class="lp-plan-cta"><a class="btn primary" href="login.html#signup" data-i18n="landing.pricing.cta">Empezar gratis</a></div>
+        </article>
+
+        <article class="lp-plan featured">
+          <h3>Plan Pro</h3>
+          <p class="plan-for">Para catálogos que crecen</p>
+          <div class="lp-price"><b>USD 9</b><small>/ mes</small></div>
+          <div class="limit">Hasta 500 productos o servicios</div>
+          <ul>
+            <li>Todo lo del plan Gratuito</li>
+            <li>Más productos y servicios</li>
+            <li>Más espacio para imágenes</li>
+            <li>Categorías sin límite</li>
+            <li>Promociones y precios de oferta</li>
+            <li>Reservas y agenda de citas</li>
+            <li>Asistente inteligente de WhatsApp</li>
+            <li>Exportación avanzada (CSV / JSON)</li>
+            <li>Soporte prioritario</li>
+            <li>Sin comisiones por venta</li>
+          </ul>
+          <div class="lp-plan-cta"><a class="btn primary" href="login.html#signup">Solicitar Pro</a></div>
+          <p class="lp-plan-note">El plan Pro se activa manualmente por nuestro equipo.</p>
         </article>
       </div>
     </div>
   </section>
 
-  <!-- ======================= PLANTILLAS ======================= -->
-  <section class="section alt">
-    <div class="wrap">
-      <h2 class="center">Plantillas</h2>
-      <div class="templates">
-        <div class="tpl tp1"></div><div class="tpl tp2"></div><div class="tpl tp3"></div><div class="tpl tp4"></div><div class="tpl tp5"></div>
+  <!-- ======================= EJEMPLOS ======================= -->
+  <section class="lp-section lp-alt">
+    <div class="lp-wrap lp-center">
+      <span class="lp-label">EJEMPLOS</span>
+      <h2 class="lp-h2">Mira lo que puedes crear</h2>
+      <p class="lp-sub">Ejemplos de catálogos por rubro para que veas cómo se organizan productos, categorías y pedidos.</p>
+      <div class="lp-templates">
+        <div class="lp-tpl"><div class="cap t1"></div><div class="body"><b>Moda</b><small>ropa.tudominio.com</small><a href="catalogo.html?b=demo">Crear uno similar</a></div></div>
+        <div class="lp-tpl"><div class="cap t2"></div><div class="body"><b>Abarrotes</b><small>abarrotes.tudominio.com</small><a href="catalogo.html?b=demo">Crear uno similar</a></div></div>
+        <div class="lp-tpl"><div class="cap t3"></div><div class="body"><b>Ferretería</b><small>ferreteria.tudominio.com</small><a href="catalogo.html?b=demo">Crear uno similar</a></div></div>
+        <div class="lp-tpl"><div class="cap t4"></div><div class="body"><b>Belleza</b><small>belleza.tudominio.com</small><a href="catalogo.html?b=demo">Crear uno similar</a></div></div>
+        <div class="lp-tpl"><div class="cap t5"></div><div class="body"><b>Servicios</b><small>servicios.tudominio.com</small><a href="catalogo.html?b=demo">Crear uno similar</a></div></div>
       </div>
     </div>
   </section>
 
   <!-- ======================= FAQ ======================= -->
-  <section class="section" id="faq">
-    <div class="wrap">
-      <h2 class="center" data-i18n="landing.faq.title">Preguntas frecuentes</h2>
-      <div class="faq">
-        <details><summary>¿Es gratis?</summary><p>Sí, el plan gratuito incluye todo lo esencial para empezar a recibir pedidos.</p></details>
-        <details><summary>¿Hay comisiones por venta?</summary><p>No. El pedido llega a tu WhatsApp y tú cobras directamente al cliente.</p></details>
-        <details><summary>¿En qué idiomas funciona?</summary><p>Español, francés y árabe, con diseño adaptado a la derecha para el árabe.</p></details>
-        <details><summary>¿Puedo vender servicios?</summary><p>Sí. Puedes crear servicios, indicar duración y modalidad, y permitir reservas con fecha y hora.</p></details>
-        <details><summary>¿Necesito instalar algo?</summary><p>No. Funciona en el navegador y se puede instalar como app (PWA).</p></details>
-        <details><summary>¿Puedo cambiar de moneda?</summary><p>Sí, desde la configuración del negocio, revisando antes los precios.</p></details>
+  <section class="lp-section" id="faq">
+    <div class="lp-wrap lp-center">
+      <span class="lp-label">PREGUNTAS</span>
+      <h2 class="lp-h2" data-i18n="landing.faq.title">Preguntas frecuentes</h2>
+      <p class="lp-sub">Lo que suelen preguntar antes de empezar.</p>
+      <div class="lp-faq">
+        <details><summary>¿Necesito una página web?</summary><p>No. Con Catalogo Wha tu negocio se publica en una dirección sencilla, lista para compartir.</p></details>
+        <details><summary>¿Mis clientes tienen que registrarse?</summary><p>No. Navegan por el catálogo, eligen sus artículos y envían el pedido sin crear ninguna cuenta.</p></details>
+        <details><summary>¿Cómo recibo los pedidos?</summary><p>El cliente arma su pedido, lo guardamos y después se abre WhatsApp con el mensaje listo para que cierres la venta.</p></details>
+        <details><summary>¿Cobran comisión por mis ventas?</summary><p>No. No cobramos comisión por la venta de tus productos o servicios.</p></details>
+        <details><summary>¿Puedo empezar gratis?</summary><p>Sí. El plan Gratuito te permite crear tu catálogo y empezar a recibir pedidos sin pagar.</p></details>
+        <details><summary>¿Puedo vender servicios y productos?</summary><p>Sí. Puedes combinar ambos: los servicios admiten duración, modalidad y reserva de cita.</p></details>
       </div>
     </div>
   </section>
 
   <!-- ======================= CTA FINAL ======================= -->
-  <section class="cta-final">
-    <div class="wrap center">
-      <h2 data-i18n="landing.cta.title">Empieza a recibir pedidos hoy</h2>
-      <p data-i18n="landing.cta.sub">Crea tu catálogo gratis y comparte tu enlace.</p>
+  <section class="lp-final">
+    <div class="lp-wrap lp-center">
+      <h2 class="lp-h2" data-i18n="landing.cta.title">Empieza a recibir pedidos hoy</h2>
+      <p class="lp-sub" data-i18n="landing.cta.sub">Crea tu catálogo gratis y comparte tu enlace.</p>
+      <div class="lp-final-blurbs">
+        <div class="lp-final-blurb"><div class="ic">🧾</div><b>Tu pedido queda registrado</b><p>Cada pedido se guarda antes de continuar a WhatsApp.</p></div>
+        <div class="lp-final-blurb"><div class="ic">🤝</div><b>Tú mantienes la relación</b><p>La venta se cierra contigo y sin comisiones.</p></div>
+      </div>
       <a class="btn primary lg" href="login.html#signup" data-i18n="landing.cta.button">Crear mi catálogo</a>
+      <p class="lp-final-price">USD 0 para empezar · Sin comisiones</p>
     </div>
   </section>
 </main>
 
 <!-- ======================= FOOTER ======================= -->
-<footer class="site-footer">
-  <div class="wrap footer-grid">
+<footer class="lp-footer">
+  <div class="lp-wrap lp-footer-grid">
     <div>
-      <div class="brand"><span class="brand-mark">🛒</span><span class="brand-name">Catalogo<span>Wha</span></span></div>
-      <p class="muted">Catálogos online con pedidos por WhatsApp.</p>
+      <a class="lp-logo" href="./"><span class="mark">🛒</span><span>Catalogo<span class="accent">Wha</span></span></a>
+      <p class="muted" style="margin-top:12px">Catálogos online con pedidos por WhatsApp.</p>
     </div>
-    <div><h5>Producto</h5><a href="#funciones">Funciones</a><a href="#precios">Precios</a><a href="#como">Cómo funciona</a></div>
+    <div><h5>Producto</h5><a href="#funciones">Funciones</a><a href="#planes">Precios</a><a href="#como">Cómo funciona</a></div>
     <div><h5>Recursos</h5><a href="#faq">FAQ</a><a href="login.html">Acceder</a><a href="catalogo.html?b=demo">Ejemplo</a></div>
     <div><h5>Legal</h5><a href="#">Privacidad</a><a href="#">Términos</a><a href="#">Contacto</a></div>
   </div>
-  <div class="wrap footer-bottom">© <span data-year></span> Catalogo Wha · <span data-i18n="common.demo">Modo demo</span></div>
+  <div class="lp-wrap lp-footer-bottom">
+    <span>© <span data-year></span> Catalogo Wha</span>
+    <span>Español · Français · العربية</span>
+  </div>
 </footer>
 
-<!-- WhatsApp flotante -->
+<!-- WhatsApp flotante (se oculta si no hay número de soporte) -->
 <a class="wa-float" data-wa-float href="#" aria-label="WhatsApp">💬</a>
 
 <!-- Banner PWA -->
