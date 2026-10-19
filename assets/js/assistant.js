@@ -29,14 +29,14 @@
       '<section class="asst-panel" data-asst-panel>' +
         '<header class="asst-head">' +
           '<div class="asst-avatar" data-asst-avatar>🤖</div>' +
-          '<div class="asst-title"><b data-asst-name>Asistente</b><small>En línea</small></div>' +
-          '<button class="icon-btn" data-asst-close aria-label="Cerrar">✕</button>' +
+          '<div class="asst-title"><b data-asst-name>' + t('as.title') + '</b><small>' + t('as.online') + '</small></div>' +
+          '<button class="icon-btn" data-asst-close aria-label="' + t('common.close') + '">✕</button>' +
         '</header>' +
         '<div class="asst-msgs" data-asst-msgs aria-live="polite"></div>' +
         '<div class="asst-quick" data-asst-quick></div>' +
         '<form class="asst-form" data-asst-form>' +
-          '<input data-asst-input autocomplete="off" placeholder="Escribe tu pregunta…" aria-label="Mensaje">' +
-          '<button type="submit" aria-label="Enviar">➤</button>' +
+          '<input data-asst-input autocomplete="off" placeholder="' + t('as.placeholder') + '" aria-label="' + t('common.name') + '">' +
+          '<button type="submit" aria-label="➤">➤</button>' +
         '</form>' +
       '</section>';
     document.body.appendChild(wrap);
@@ -151,7 +151,7 @@
 
   function respond(msg) {
     var d = data();
-    if (!d.biz) { say('Ahora mismo el catálogo no está disponible. Inténtalo en un momento.'); return; }
+    if (!d.biz) { say(t('as.noCatalog')); return; }
     A.biz = d.biz;
 
     // Flujo de recopilación de datos
@@ -162,8 +162,8 @@
       A.state = 'idle';
       var found = findProducts(msg);
       if (found.length) return showProducts(found);
-      say('No encuentro «' + esc(msg) + '» en el catálogo. ¿Quieres ver las categorías o hablar con el negocio?',
-        { quick: ['Ver categorías', 'Hablar con el negocio'] });
+      say(t('as.notFound', { q: esc(msg) }),
+        { quick: [t('as.q.cats'), t('as.q.human')] });
       return;
     }
 
@@ -172,96 +172,96 @@
     if (hits.length) return showProducts(hits);
 
     if (intent === 'greeting') return greet(true);
-    if (intent === 'thanks') { say('¡Con gusto! Si necesitas algo más, aquí estoy. 😊'); return; }
+    if (intent === 'thanks') { say(t('as.thanks')); return; }
     if (intent === 'delivery') return answerDelivery(d);
     if (intent === 'payment') return answerPayment(d);
     if (intent === 'hours') return answerHours(d);
     if (intent === 'categories') return answerCategories(d);
     if (intent === 'order' || intent === 'human') return startLead();
     if (intent === 'price') {
-      say('Dime el nombre del artículo y te digo el precio. También puedes ver todo en el catálogo.',
-        { quick: ['Ver categorías', 'Hablar con el negocio'] });
+      say(t('as.priceAsk'), { quick: [t('as.q.cats'), t('as.q.human')] });
       return;
     }
     // Sin intención clara
-    say('Puedo ayudarte con precios, categorías, entrega, pagos y horarios. ¿Sobre qué quieres saber?',
-      { quick: ['Ver categorías', 'Buscar un artículo', 'Horario', 'Quiero hacer un pedido'] });
+    say(t('as.fallback'),
+      { quick: [t('as.q.cats'), t('as.q.search'), t('as.q.hours'), t('as.q.order')] });
   }
 
   // --------------------------------------------------------- Respuestas
   function greet(short) {
-    var d = data(); var name = d.biz ? d.biz.name : 'la tienda';
-    if (A.els.name) A.els.name.textContent = 'Asistente · ' + name;
+    var d = data(); var name = d.biz ? d.biz.name : '';
+    if (A.els.name) A.els.name.textContent = t('as.title') + (name ? ' · ' + name : '');
     if (A.els.avatar && d.biz) A.els.avatar.textContent = (d.biz.name || 'M').trim().charAt(0).toUpperCase();
-    say('¡Hola! 👋 Soy el asistente de <b>' + esc(name) + '</b>.<br>Te ayudo con precios, disponibilidad, categorías, entrega y horarios. También puedo recoger tus datos y pasar tu pedido por WhatsApp.<br><br>¿Qué necesitas?',
-      { quick: ['Ver categorías', 'Buscar un artículo', 'Horario', 'Quiero hacer un pedido'] });
+    say(t('as.greet', { name: name }),
+      { quick: [t('as.q.cats'), t('as.q.search'), t('as.q.hours'), t('as.q.order')] });
   }
 
   function showProducts(list) {
     var d = data();
-    var html = list.length === 1 ? 'Encontré esto:' : 'Encontré estas opciones:';
+    var html = (list.length === 1 ? t('as.foundOne') : t('as.foundMany'));
     html += list.map(function (p) { return productLine(p, d.biz); }).join('');
-    html += '<span class="prod">¿Quieres que te ayude a pedirlo?</span>';
-    say(html, { quick: ['Quiero hacer un pedido', 'Ver categorías'] });
+    html += '<span class="prod">' + t('as.foundAsk') + '</span>';
+    say(html, { quick: [t('as.q.order'), t('as.q.cats')] });
   }
 
   function answerCategories(d) {
-    if (!d.cats.length) { say('Todavía no hay categorías publicadas. ¿Quieres buscar un artículo por nombre?', { quick: ['Buscar un artículo'] }); return; }
+    if (!d.cats.length) { say(t('as.noCats'), { quick: [t('as.q.search')] }); return; }
     var byKind = { product: [], service: [] };
     d.cats.forEach(function (c) {
       var n = d.products.filter(function (p) { return p.category_id === c.id; }).length;
       (c.kind === 'service' ? byKind.service : byKind.product).push(esc(c.name) + ' (' + n + ')');
     });
-    var html = 'Estas son las categorías disponibles:';
-    if (byKind.product.length) html += '<span class="prod">📦 Productos: ' + byKind.product.join(', ') + '</span>';
-    if (byKind.service.length) html += '<span class="prod">🔧 Servicios: ' + byKind.service.join(', ') + '</span>';
-    html += '<span class="prod">Dime el nombre de un artículo y te doy su precio.</span>';
-    say(html, { quick: ['Buscar un artículo', 'Quiero hacer un pedido'] });
+    var html = t('as.catsIntro');
+    if (byKind.product.length) html += '<span class="prod">' + t('as.catsProducts') + ': ' + byKind.product.join(', ') + '</span>';
+    if (byKind.service.length) html += '<span class="prod">' + t('as.catsServices') + ': ' + byKind.service.join(', ') + '</span>';
+    html += '<span class="prod">' + t('as.catsAsk') + '</span>';
+    say(html, { quick: [t('as.q.search'), t('as.q.order')] });
   }
 
   function answerDelivery(d) {
     var b = d.biz, parts = [];
-    if (b.delivery === 'custom' || b.delivery_time || Number(b.delivery_fee) > 0 || b.delivery_notes) {
-      parts.push('La entrega se coordina con el negocio.');
-      if (Number(b.delivery_fee) > 0) parts.push('Tarifa: ' + money(b.delivery_fee, b.currency) + '.');
-      if (b.delivery_time) parts.push('Plazo: ' + esc(b.delivery_time) + '.');
+    if ((b.delivery && b.delivery !== 'whatsapp') || b.delivery_time || Number(b.delivery_fee) > 0 || b.delivery_notes) {
+      parts.push(t('as.deliveryInfo'));
+      if (Number(b.delivery_fee) > 0) parts.push(t('as.fee') + ': ' + money(b.delivery_fee, b.currency) + '.');
+      if (b.delivery_time) parts.push(t('as.time') + ': ' + esc(b.delivery_time) + '.');
       if (b.delivery_notes) parts.push(esc(b.delivery_notes));
     } else {
-      parts.push('La entrega se coordina directamente por WhatsApp con el negocio.');
+      parts.push(t('as.deliveryCoord'));
     }
-    say(parts.join(' '), { quick: ['Quiero hacer un pedido', 'Formas de pago'] });
+    say(parts.join(' '), { quick: [t('as.q.order'), t('set.payments')] });
   }
 
   function answerPayment(d) {
     var pays = d.biz.payments || [];
-    say(pays.length ? 'Aceptamos: <b>' + esc(pays.join(', ')) + '</b>.' : 'La forma de pago se acuerda directamente con el negocio por WhatsApp.',
-      { quick: ['Quiero hacer un pedido', 'Horario'] });
+    say(pays.length ? t('as.payHas') + ' <b>' + esc(pays.join(', ')) + '</b>.' : t('as.payNone'),
+      { quick: [t('as.q.order'), t('as.q.hours')] });
   }
 
   function answerHours(d) {
     var b = d.biz;
-    var days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    var days = t('as.days');
+    var names = days.split(',');
     var work = (b.work_days || []).slice().sort();
-    var daysTxt = work.length ? work.map(function (i) { return days[i]; }).join(', ') : 'sin días definidos';
-    say('Atendemos <b>' + esc(daysTxt) + '</b> de <b>' + esc(b.open_time || '—') + '</b> a <b>' + esc(b.close_time || '—') + '</b>.',
-      { quick: ['Quiero hacer un pedido', 'Ver categorías'] });
+    var daysTxt = work.length ? work.map(function (i) { return names[i] || ''; }).join(', ') : t('as.daysNone');
+    say(t('as.hours', { days: esc(daysTxt), open: esc(b.open_time || '—'), close: esc(b.close_time || '—') }),
+      { quick: [t('as.q.order'), t('as.q.cats')] });
   }
 
   // ----------------------------------------------------- Recogida de datos
   function startLead() {
     A.state = 'lead_name'; A.lead = {}; A.saved = false;
-    say('Perfecto, te ayudo con tu pedido. 📝<br><br>¿Cómo te llamas?');
+    say(t('as.leadStart'));
   }
 
   function handleLead(msg) {
     if (A.state === 'lead_name') {
       A.lead.name = msg; A.state = 'lead_phone';
-      say('Gracias, <b>' + esc(msg) + '</b>. ¿Cuál es tu número de teléfono?');
+      say(t('as.leadName', { name: esc(msg) }));
       return;
     }
     if (A.state === 'lead_phone') {
       A.lead.phone = msg; A.state = 'lead_need';
-      say('Anotado. ¿Qué necesitas exactamente? (producto, cantidad o servicio)');
+      say(t('as.leadPhone'));
       return;
     }
     if (A.state === 'lead_need') {
@@ -290,10 +290,10 @@
         '\nNecesita: ' + (A.lead.need || '') + '\n--------------------------------\nEnviado desde el asistente de ' + d.biz.name)
       : null;
 
-    var html = '¡Listo, ' + esc(A.lead.name || '') + '! ✅<br>He guardado tu contacto con el negocio:' +
-      '<span class="prod">👤 ' + esc(A.lead.name || '') + '<br>📞 ' + esc(A.lead.phone || '') + '<br>📝 ' + esc(A.lead.need || '') + '</span>';
-    if (wa) html += '<span class="prod">Pulsa aquí para continuar por WhatsApp: <a href="' + wa + '" target="_blank" rel="noopener">abrir WhatsApp</a></span>';
-    else html += '<span class="prod">El negocio no tiene un WhatsApp configurado todavía.</span>';
+    var html = t('as.leadDone', { name: esc(A.lead.name || '') }) +
+      '<span class="prod">' + esc(A.lead.name || '') + '<br>' + esc(A.lead.phone || '') + '<br>' + esc(A.lead.need || '') + '</span>';
+    if (wa) html += '<span class="prod">' + t('as.leadWa') + ' <a href="' + wa + '" target="_blank" rel="noopener">' + t('as.waOpen') + '</a></span>';
+    else html += '<span class="prod">' + t('as.leadNoWa') + '</span>';
 
     say(html, { quick: ['Ver categorías', 'Gracias'] });
   }
@@ -301,6 +301,14 @@
   // ---------------------------------------------------------------- Init
   document.addEventListener('DOMContentLoaded', function () {
     build();
+    // Re-traduce al cambiar de idioma
+    window.addEventListener('cw:lang', function () {
+      if (!A.els) return;
+      A.els.input.placeholder = t('as.placeholder');
+      A.els.msgs.innerHTML = ''; A.els.quick.innerHTML = '';
+      A.state = 'idle'; A.lead = {}; A.greeted = true;
+      greet();
+    });
     // Refresca el nombre cuando el catálogo termine de cargar.
     var tries = 0;
     var iv = setInterval(function () {

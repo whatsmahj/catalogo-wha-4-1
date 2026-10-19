@@ -151,7 +151,7 @@
       if (Number(order.fee) > 0) L.push('Subtotal: ' + CWU.money(order.subtotal, cur));
       if (Number(order.fee) > 0) L.push('Entrega: +' + CWU.money(order.fee, cur));
       L.push('TOTAL: *' + CWU.money(order.total, cur) + '*');
-      if (biz.delivery === 'custom' || (biz.delivery_notes || biz.delivery_time)) {
+      if ((biz.delivery && biz.delivery !== 'whatsapp') || biz.delivery_notes || biz.delivery_time) {
         L.push(line);
         L.push('*ENTREGA*');
         if (biz.delivery_time) L.push('Plazo: ' + biz.delivery_time);
@@ -362,6 +362,8 @@
 
   // Aplica i18n al cargar y en cada cambio de idioma.
   document.addEventListener('DOMContentLoaded', function () {
+    if (CW._domReady) return; // evita doble inicializacion
+    CW._domReady = true;
     CW.i18n.apply();
     CWU.mountLangSwitchers();
     CWU.initPWA();
@@ -378,6 +380,23 @@
     if (waf) {
       if (cfg.supportWhatsapp) waf.href = 'https://wa.me/' + String(cfg.supportWhatsapp).replace(/\D/g, '');
       else waf.hidden = true;
+    }
+
+    // Menú móvil de la home
+    var burger = document.querySelector('[data-lp-burger]');
+    var lpMenu = document.querySelector('[data-lp-menu]');
+    if (burger && lpMenu) {
+      function closeMenu() { lpMenu.hidden = true; burger.setAttribute('aria-expanded', 'false'); burger.textContent = '☰'; }
+      burger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var willOpen = lpMenu.hidden;
+        lpMenu.hidden = !willOpen;
+        burger.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        burger.textContent = willOpen ? '✕' : '☰';
+      });
+      lpMenu.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', closeMenu); });
+      document.addEventListener('click', function (e) { if (!lpMenu.hidden && !lpMenu.contains(e.target)) closeMenu(); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !lpMenu.hidden) closeMenu(); });
     }
   });
 })(window, document);

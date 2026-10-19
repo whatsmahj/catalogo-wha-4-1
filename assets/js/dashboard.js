@@ -7,6 +7,21 @@
   var CW = window.CW;
   var $ = CW.$, $$ = CW.$$, esc = CW.esc, money = CW.money, t = function (k, v) { return CW.i18n.t(k, v); };
 
+  var WA_ICON = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 20zm4.4-5.9c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1l-.7.9c-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.1-.2 0-.4.1-.5l.4-.5c.1-.2.1-.3 0-.5l-.7-1.6c-.2-.4-.4-.4-.5-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.2.7 3 .6.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1z"/></svg>';
+
+  var SET_HERO = {
+    info: ['Información del negocio', 'Nombre, descripción, ubicación y zona horaria.'],
+    whatsapp: ['WhatsApp del negocio', 'Define el número de WhatsApp al que tus clientes enviarán sus pedidos.'],
+    brand: ['Marca del negocio', 'Elige el logotipo y el color principal de tu catálogo.'],
+    currency: ['Moneda', 'Define la moneda con la que trabajará tu catálogo.'],
+    link: ['Enlace del catálogo', 'El enlace que compartes para que tus clientes abran tu catálogo.'],
+    presentation: ['Presentación del catálogo', 'Título, descripción e imagen del encabezado público.'],
+    delivery: ['Entrega', 'Define cómo coordinarás la entrega o el retiro de los pedidos con tus clientes.'],
+    payments: ['Formas de pago', 'Opciones que el cliente puede indicar al hacer su pedido.'],
+    hours: ['Horarios', 'Días y horas en que atiendes.'],
+    seo: ['SEO y compartir', 'Mejora cómo se presenta tu catálogo en buscadores y cuando compartes tu enlace. Tú eliges el contenido; nosotros nos encargamos de las etiquetas técnicas.']
+  };
+
   var state = {
     session: null, biz: null, isAdmin: false,
     cats: [], products: [], orders: [], library: [],
@@ -779,10 +794,32 @@
         '<div class="two-col-inline">' + field('Región', '<input data-f="region" value="' + esc(b.region || '') + '">') + field('Ciudad', '<input data-f="city" value="' + esc(b.city || '') + '">') + '</div>' +
         field(t('cat.alt'), '<input data-f="address" value="' + esc(b.address || '') + '">') +
         field('Zona horaria', '<input data-f="timezone" value="' + esc(b.timezone || '') + '">'));
-    else if (id === 'whatsapp') body =
-      card(t('set.whatsapp'), t('set.whatsapp.desc'), field('País o región', '<select data-f="wcountry">' + CW.api.countryOptions(b.country) + '</select>') +
-        field(t('common.phone'), '<input data-f="wphone" value="' + esc(stripCountry(b.country, b.whatsapp)) + '" placeholder="987 654 321">') +
-        '<p class="muted">' + (b.whatsapp ? 'Actual: ' + esc(b.whatsapp) : 'Sin configurar') + '</p>');
+    else if (id === 'whatsapp') {
+      var ccode = CW.COUNTRY_CODES[b.country] || CW.COUNTRY_CODES.MA;
+      body =
+        '<div class="set-two">' +
+          '<div class="card">' +
+            '<span class="kicker">NÚMERO DE WHATSAPP</span>' +
+            '<h3>Cambiar número de WhatsApp</h3>' +
+            field('País o región', '<select data-f="wcountry">' + CW.api.countryOptions(b.country) + '</select>') +
+            '<label class="field"><span>Número de WhatsApp</span>' +
+              '<div class="phone-input"><span class="pi-prefix" data-pi-prefix>' + ccode.flag + ' +' + ccode.code + '</span>' +
+              '<input data-f="wphone" inputmode="tel" value="' + esc(stripCountry(b.country, b.whatsapp)) + '" placeholder="670 96 40 30">' +
+              '<span class="pi-wa">' + WA_ICON + '</span></div>' +
+            '</label>' +
+            '<p class="muted">Ingresa el número sin el código de país.</p>' +
+            '<button type="button" class="btn primary block" data-wa-review>Revisar y confirmar</button>' +
+          '</div>' +
+          '<aside class="set-side">' +
+            '<div class="card wa-current"><span class="kicker">NÚMERO DE WHATSAPP ACTUAL</span><b data-wa-current>' + (b.whatsapp ? '+' + esc(b.whatsapp) : 'Sin configurar') + '</b></div>' +
+            '<div class="card"><div class="card-head"><h4 style="margin:0">Probar WhatsApp</h4><span class="wa-badge">' + WA_ICON + '</span></div>' +
+              '<p class="muted">Abre el chat con el número actualmente guardado.</p>' +
+              (b.whatsapp ? '<a class="btn wa-ghost small" target="_blank" rel="noopener" href="' + CW.api.waLink(b.whatsapp, 'Hola, quiero hacer un pedido.') + '">Abrir WhatsApp</a>' : '<span class="muted">Configura un número primero.</span>') +
+            '</div>' +
+            '<div class="card note-card"><b>Ten en cuenta</b><p class="muted">Probar WhatsApp solo abre una conversación con el número guardado. No verifica que el número te pertenezca.</p></div>' +
+          '</aside>' +
+        '</div>';
+    }
     else if (id === 'brand') body =
       card(t('set.brand'), '', '<div class="logo-preview" data-logo>' + (b.logo_url ? '<img src="' + esc(b.logo_url) + '">' : '<span>' + esc((b.name || 'M').charAt(0)) + '</span>') + '</div>' +
         '<label class="btn ghost small">Seleccionar archivo<input type="file" accept="image/*" data-logo-file hidden></label>' +
@@ -802,13 +839,31 @@
         field('Título', '<input data-f="hero_title" value="' + esc(b.hero_title || '') + '" placeholder="Ej. Todo para tu hogar">') +
         field(t('prod.desc'), '<textarea data-f="hero_desc" rows="3">' + esc(b.hero_desc || '') + '</textarea>') +
         field('Imagen del encabezado', '<div class="img-slot ' + (b.hero_image ? 'filled' : '') + '" data-hero style="max-width:260px">' + (b.hero_image ? '<img src="' + esc(b.hero_image) + '">' : '<span>+</span>') + '</div>'));
-    else if (id === 'delivery') body =
-      card(t('set.delivery'), t('set.delivery.desc'),
-        '<label class="radio"><input type="radio" name="dv" value="whatsapp"' + (b.delivery !== 'custom' ? ' checked' : '') + '> Coordinar por WhatsApp</label>' +
-        '<label class="radio"><input type="radio" name="dv" value="custom"' + (b.delivery === 'custom' ? ' checked' : '') + '> Definir modalidades de entrega</label>' +
-        '<div class="two-col-inline">' + field('Tarifa (' + b.currency + ')', '<input type="number" step="0.01" data-f="delivery_fee" value="' + (b.delivery_fee || 0) + '">') +
-        field('Plazo', '<input data-f="delivery_time" value="' + esc(b.delivery_time || '') + '" placeholder="24-48 h">') + '</div>' +
-        field('Notas', '<textarea data-f="delivery_notes" rows="2">' + esc(b.delivery_notes || '') + '</textarea>'));
+    else if (id === 'delivery') {
+      var modes = (b.delivery && b.delivery !== 'whatsapp') ? String(b.delivery).split(',') : [];
+      var isCustom = !!(b.delivery && b.delivery !== 'whatsapp');
+      body =
+        '<div class="card">' +
+          '<span class="kicker">ENTREGA</span>' +
+          '<h3>Modalidad de entrega</h3>' +
+          '<p class="muted">Elige si coordinarás la entrega directamente por WhatsApp o si quieres definir las modalidades disponibles.</p>' +
+          '<label class="opt-card"><input type="radio" name="dv" value="whatsapp"' + (isCustom ? '' : ' checked') + '>' +
+            '<span class="opt-body"><b>Coordinar por WhatsApp</b><small>Los detalles de entrega o recojo se coordinarán directamente con el cliente por WhatsApp.</small></span></label>' +
+          '<label class="opt-card"><input type="radio" name="dv" value="custom"' + (isCustom ? ' checked' : '') + '>' +
+            '<span class="opt-body"><b>Definir modalidades de entrega</b><small>Selecciona las modalidades que estarán disponibles para el cliente.</small></span></label>' +
+          '<div class="opt-modes" data-dv-modes' + (isCustom ? '' : ' hidden') + '>' +
+            '<label class="opt-card sub"><input type="checkbox" data-dv-mode="pickup"' + (modes.indexOf('pickup') >= 0 ? ' checked' : '') + '>' +
+              '<span class="opt-body"><b>Retiro</b><small>El cliente coordina el retiro de su pedido directamente con el negocio.</small></span></label>' +
+            '<label class="opt-card sub"><input type="checkbox" data-dv-mode="delivery"' + (modes.indexOf('delivery') >= 0 ? ' checked' : '') + '>' +
+              '<span class="opt-body"><b>Delivery</b><small>El cliente indica una dirección y coordina los detalles del delivery por WhatsApp.</small></span></label>' +
+            '<div class="two-col-inline" style="margin-top:14px">' +
+              field('Tarifa de entrega (' + b.currency + ')', '<input type="number" step="0.01" data-f="delivery_fee" value="' + (b.delivery_fee || 0) + '">') +
+              field('Plazo estimado', '<input data-f="delivery_time" value="' + esc(b.delivery_time || '') + '" placeholder="24-48 h">') +
+            '</div>' +
+            field('Notas de entrega', '<textarea data-f="delivery_notes" rows="2">' + esc(b.delivery_notes || '') + '</textarea>') +
+          '</div>' +
+        '</div>';
+    }
     else if (id === 'payments') body =
       card(t('set.payments'), t('set.payments.desc'),
         '<div class="chips" data-pays>' + ['Efectivo', 'Transferencia bancaria', 'Tarjeta', 'Pago al recibir'].map(function (p) {
@@ -823,24 +878,58 @@
         field('Apertura', '<input type="time" data-f="open_time" value="' + esc(b.open_time || '09:00') + '">') +
         field('Cierre', '<input type="time" data-f="close_time" value="' + esc(b.close_time || '18:00') + '">') + '</div>' +
         field('Intervalo de citas (min)', '<input type="number" data-f="slot_minutes" value="' + (b.slot_minutes || 30) + '">'));
-    else if (id === 'seo') body =
-      card('Buscadores', 'Cómo apareces en Google',
-        field('Título SEO <span class="muted" data-c-seo-t></span>', '<input data-f="seo_title" maxlength="70" value="' + esc(b.seo_title || '') + '" placeholder="' + esc(b.name) + '">') +
-        field('Descripción SEO <span class="muted" data-c-seo-d></span>', '<textarea data-f="seo_description" rows="3" maxlength="170" placeholder="Describe tu catálogo en una frase.">' + esc(b.seo_description || '') + '</textarea>') +
-        field('Palabras clave <span class="muted">(separadas por comas)</span>', '<input data-f="seo_keywords" value="' + esc(b.seo_keywords || '') + '">') +
-        '<span class="kicker">VISTA PREVIA EN GOOGLE</span>' +
-        '<div class="google-preview"><div class="gp-url">https://' + esc(CW.publicHost) + '/' + esc(b.slug) + '</div>' +
-        '<div class="gp-title" data-gp-title>' + esc(b.seo_title || b.name) + '</div>' +
-        '<div class="gp-desc" data-gp-desc>' + esc(b.seo_description || b.description || '') + '</div></div>') +
-      card('Redes y WhatsApp', 'Cómo se ve el enlace al compartirlo',
-        field('Imagen para compartir <span class="muted">(recomendado 1200 × 630)</span>', '<div class="img-slot ' + (b.seo_image ? 'filled' : '') + '" data-seo-img style="max-width:300px">' + (b.seo_image ? '<img src="' + esc(b.seo_image) + '">' : '<span>+</span>') + '</div>') +
-        '<span class="kicker">VISTA PREVIA SOCIAL</span>' +
-        '<div class="social-preview"><div class="sp-img" data-sp-img>' + (b.seo_image ? '<img src="' + esc(b.seo_image) + '">' : '<span>Sin imagen</span>') + '</div>' +
-        '<div class="sp-body"><small data-sp-url>' + esc(CW.publicHost) + '</small><b data-sp-title>' + esc(b.seo_title || b.name) + '</b><span data-sp-desc>' + esc(b.seo_description || b.description || '') + '</span></div></div>');
+    else if (id === 'seo') {
+      var autoImg = (state.products[0] && state.products[0].images && state.products[0].images[0]) || b.hero_image || b.logo_url || '';
+      var prevImg = b.seo_image || autoImg;
+      body =
+        '<div class="set-two seo-two">' +
+          '<div class="set-col">' +
+            '<div class="card">' +
+              '<span class="kicker">TU CATÁLOGO</span>' +
+              '<h3>Título y descripción</h3>' +
+              '<p class="muted">Explica en pocas palabras qué vendes y qué encontrará el cliente. Los colores son una guía, no una obligación.</p>' +
+              '<label class="field"><span class="row-between-inline"><span>Título para buscadores y redes</span><small class="muted" data-c-seo-t></small></span>' +
+                '<input data-f="seo_title" maxlength="70" value="' + esc(b.seo_title || '') + '" placeholder="' + esc(b.name) + '">' +
+                '<small class="muted">Sugerencia: incluye tu nombre comercial y lo que vendes. Como guía visual, 30-60 caracteres suele ser una longitud clara. <span data-len-t></span></small>' +
+              '</label>' +
+              '<label class="field"><span class="row-between-inline"><span>Descripción</span><small class="muted" data-c-seo-d></small></span>' +
+                '<textarea data-f="seo_description" rows="4" maxlength="170" placeholder="Describe tu catálogo en una o dos frases.">' + esc(b.seo_description || '') + '</textarea>' +
+                '<small class="muted">Como guía, 120-160 caracteres suele dar un buen contexto. Google puede recortar o generar su propio fragmento según la búsqueda. <span data-len-d></span></small>' +
+              '</label>' +
+              '<div class="info-box">¿No sabes qué escribir todavía? Puedes dejar los campos vacíos. Usaremos automáticamente el nombre y la descripción de tu negocio para que el catálogo conserve información básica.</div>' +
+            '</div>' +
+            '<div class="card">' +
+              '<span class="kicker">IMAGEN AL COMPARTIR</span>' +
+              '<h3>Imagen para redes y mensajería</h3>' +
+              '<p class="muted">Puedes elegir una imagen especial para compartir. Si no eliges una, se usará la imagen destacada del catálogo si existe.</p>' +
+              '<b data-seo-img-state>' + (b.seo_image ? 'Imagen personalizada' : 'Sin imagen personalizada') + '</b>' +
+              '<div class="img-slot ' + (b.seo_image ? 'filled' : '') + '" data-seo-img style="max-width:320px;margin:12px 0">' + (b.seo_image ? '<img src="' + esc(b.seo_image) + '">' : '<span>+</span>') + '</div>' +
+              '<p class="muted">Recomendado: 1200 × 630 px. JPG, PNG o WebP, máximo 5 MB.</p>' +
+              '<button type="button" class="btn ghost small" data-seo-add>Agregar imagen</button>' +
+              '<div class="auto-card"><div class="auto-thumb">' + (autoImg ? '<img src="' + esc(autoImg) + '">' : '🖼️') + '</div>' +
+                '<div><span class="kicker">RESPALDO AUTOMÁTICO <span class="tag">AUTOMÁTICA</span></span><b>Imagen destacada del catálogo</b>' +
+                '<p class="muted">Como respaldo, se usará automáticamente la imagen destacada de tu catálogo cuando una plataforma solicite una imagen.</p></div></div>' +
+              '<div class="set-actions"><button type="button" class="btn primary" data-save>Guardar SEO</button></div>' +
+            '</div>' +
+          '</div>' +
+          '<aside class="set-side">' +
+            '<div class="card"><span class="kicker">VISTA PREVIA</span><h3>Así puede verse tu enlace</h3>' +
+              '<p class="muted">La tarjeta cambia en tiempo real mientras escribes. Cada plataforma decide el diseño final.</p>' +
+              '<div class="social-preview"><div class="sp-img" data-sp-img>' + (prevImg ? '<img src="' + esc(prevImg) + '">' : '<span>Sin imagen</span>') + '</div>' +
+                '<div class="sp-body"><small data-sp-url>' + esc(CW.publicHost) + '</small><b data-sp-title>' + esc(b.seo_title || b.name) + '</b><span data-sp-desc>' + esc(b.seo_description || b.description || '') + '</span></div></div>' +
+            '</div>' +
+            '<div class="card"><b>Hacemos la parte técnica</b><p class="muted">Generamos automáticamente el título, la meta descripción, la URL canónica, Open Graph y la tarjeta grande para X/Twitter. Tú solo completas el contenido.</p></div>' +
+            '<div class="card note-card warn"><b>Si cambias el texto o la imagen</b><p class="muted">En tu catálogo el cambio queda activo al guardar. Google y las redes sociales pueden seguir mostrando durante un tiempo una versión anterior por sus cachés propias.</p></div>' +
+          '</aside>' +
+        '</div>';
+    }
 
-    view.innerHTML = '<div class="view-head"><div><span class="crumb-mini">' + t('set.title') + ' / ' + esc(title) + '</span><h1>' + esc(title) + '</h1></div>' +
-      '<button class="btn ghost" data-back>← ' + t('common.back') + '</button></div>' + body +
-      '<div class="form-sticky"><button class="btn ghost" data-back2>' + t('common.back') + '</button><button class="btn primary" data-save>✓ ' + t('set.save') + '</button></div>';
+    var hero = SET_HERO[id] || [title, ''];
+    view.innerHTML =
+      '<section class="set-hero"><h1>' + esc(hero[0]) + '</h1>' + (hero[1] ? '<p>' + esc(hero[1]) + '</p>' : '') + '</section>' +
+      '<button type="button" class="btn ghost small set-back" data-back>← ' + t('common.back') + ' ' + t('set.title').toLowerCase() + '</button>' +
+      body +
+      '<div class="form-sticky"><button type="button" class="btn ghost" data-back2>' + t('common.back') + '</button><button type="button" class="btn primary" data-save>✓ ' + t('set.save') + '</button></div>';
 
     $('[data-back]', view).addEventListener('click', function () { location.hash = '#settings'; });
     $('[data-back2]', view).addEventListener('click', function () { location.hash = '#settings'; });
@@ -894,31 +983,63 @@
     }
     if (id === 'seo') {
       var tEl = $('[data-f="seo_title"]', view), dEl = $('[data-f="seo_description"]', view);
+      function lenBadge(el, min, max) {
+        var n = el.value.length;
+        if (!n) return '';
+        if (n < min) return '<span class="len-badge short">Corta</span>';
+        if (n > max) return '<span class="len-badge long">Larga</span>';
+        return '<span class="len-badge ok">Buena longitud</span>';
+      }
       function upd() {
-        var tv = tEl.value, dv = dEl.value;
-        $('[data-c-seo-t]', view).textContent = tv.length + '/70';
-        $('[data-c-seo-d]', view).textContent = dv.length + '/170';
-        var gt = $('[data-gp-title]', view), gd = $('[data-gp-desc]', view);
+        $('[data-c-seo-t]', view).textContent = tEl.value.length + ' caracteres';
+        $('[data-c-seo-d]', view).textContent = dEl.value.length + ' caracteres';
+        $('[data-len-t]', view).innerHTML = lenBadge(tEl, 30, 60);
+        $('[data-len-d]', view).innerHTML = lenBadge(dEl, 120, 160);
         var st = $('[data-sp-title]', view), sd = $('[data-sp-desc]', view);
-        if (gt) gt.textContent = tv || b.name;
-        if (gd) gd.textContent = dv || b.description || '';
-        if (st) st.textContent = tv || b.name;
-        if (sd) sd.textContent = dv || b.description || '';
+        if (st) st.textContent = tEl.value || b.name;
+        if (sd) sd.textContent = dEl.value || b.description || '';
       }
       tEl.addEventListener('input', upd); dEl.addEventListener('input', upd); upd();
-      var si = $('[data-seo-img]', view);
-      if (si) si.addEventListener('click', function () {
+      var addImg = $('[data-seo-add]', view);
+      if (addImg) addImg.addEventListener('click', function () {
         openImagePicker(1, function (u) {
           if (!u[0]) return;
           view._seoImg = u[0];
-          si.innerHTML = '<img src="' + esc(u[0]) + '">'; si.classList.add('filled');
+          var si = $('[data-seo-img]', view); if (si) { si.innerHTML = '<img src="' + esc(u[0]) + '">'; si.classList.add('filled'); }
           var spi = $('[data-sp-img]', view); if (spi) spi.innerHTML = '<img src="' + esc(u[0]) + '">';
+          var stt = $('[data-seo-img-state]', view); if (stt) stt.textContent = 'Imagen personalizada';
+        });
+      });
+    }
+    if (id === 'whatsapp') {
+      var wcSel = $('[data-f="wcountry"]', view);
+      var pi = $('[data-pi-prefix]', view);
+      wcSel.addEventListener('change', function () {
+        var c = CW.COUNTRY_CODES[wcSel.value] || CW.COUNTRY_CODES.MA;
+        pi.innerHTML = c.flag + ' +' + c.code;
+      });
+      $('[data-wa-review]', view).addEventListener('click', function () {
+        var num = CW.api.normalizePhone(wcSel.value, $('[data-f="wphone"]', view).value);
+        if (!num || num.length < 8) { CW.toast('Revisa el número de WhatsApp.'); return; }
+        CW.confirm('¿Guardar +' + num + ' como el WhatsApp del negocio?', function () {
+          CW.store.saveBusiness(b.id, { whatsapp: num, country: wcSel.value }).then(function (nb) {
+            state.biz = nb || Object.assign({}, b, { whatsapp: num, country: wcSel.value });
+            CW.toast(t('common.save')); loadAll().then(function () { location.hash = '#settings'; route(); });
+          });
+        });
+      });
+    }
+    if (id === 'delivery') {
+      var dvModes = $('[data-dv-modes]', view);
+      $$('input[name=dv]', view).forEach(function (r) {
+        r.addEventListener('change', function () {
+          dvModes.hidden = ($('input[name=dv]:checked', view) || {}).value !== 'custom';
         });
       });
     }
     if (id === 'info') $('[data-gocur]', view).addEventListener('click', function () { location.hash = '#settings/currency'; });
 
-    $('[data-save]', view).addEventListener('click', function () {
+    function doSave() {
       var patch = {};
       if (id === 'info') patch = { name: val('name'), description: val('description'), country: val('country'), region: val('region'), city: val('city'), address: val('address'), timezone: val('timezone') };
       else if (id === 'whatsapp') {
@@ -932,7 +1053,14 @@
       }
       else if (id === 'link') patch = { slug: CW.store.slugify(val('slug')) };
       else if (id === 'presentation') patch = { hero_enabled: $('[data-f="hero_enabled"]', view).checked, hero_title: val('hero_title'), hero_desc: val('hero_desc'), hero_image: view._hero || b.hero_image };
-      else if (id === 'delivery') patch = { delivery: ($('input[name=dv]:checked', view) || {}).value || 'whatsapp', delivery_fee: Number(val('delivery_fee') || 0), delivery_time: val('delivery_time'), delivery_notes: val('delivery_notes') };
+      else if (id === 'delivery') {
+        var dv = ($('input[name=dv]:checked', view) || {}).value || 'whatsapp';
+        if (dv === 'whatsapp') patch = { delivery: 'whatsapp' };
+        else {
+          var dmodes = $$('[data-dv-mode]', view).filter(function (c) { return c.checked; }).map(function (c) { return c.dataset.dvMode; });
+          patch = { delivery: dmodes.length ? dmodes.join(',') : 'delivery', delivery_fee: Number(val('delivery_fee') || 0), delivery_time: val('delivery_time'), delivery_notes: val('delivery_notes') };
+        }
+      }
       else if (id === 'payments') patch = { payments: view._pays, payment_notes: val('payment_notes') };
       else if (id === 'hours') patch = { work_days: view._days, open_time: val('open_time'), close_time: val('close_time'), slot_minutes: Number(val('slot_minutes') || 30) };
       else if (id === 'seo') patch = { seo_title: val('seo_title'), seo_description: val('seo_description'), seo_keywords: val('seo_keywords'), seo_image: view._seoImg || b.seo_image };
@@ -942,7 +1070,8 @@
         renderBizChip(); CW.toast(t('common.save'));
         loadAll().then(function () { location.hash = '#settings'; route(); });
       });
-    });
+    }
+    $$('[data-save]', view).forEach(function (btn) { btn.addEventListener('click', doSave); });
   }
 
   // ---------------------------------------------------------------------

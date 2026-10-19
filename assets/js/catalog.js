@@ -93,12 +93,14 @@
 
     // Info entrega / pagos
     var info = '';
-    var hasDelivery = b.delivery === 'custom' || b.delivery_time || b.delivery_notes || Number(b.delivery_fee) > 0;
+    var dvModes = (b.delivery && b.delivery !== 'whatsapp') ? String(b.delivery).split(',') : [];
+    var hasDelivery = dvModes.length > 0 || b.delivery_time || b.delivery_notes || Number(b.delivery_fee) > 0;
     var hasPays = (b.payments || []).length;
     if (hasDelivery || hasPays) {
       info = '<section class="cat-info"><div class="wrap cat-info-grid">' +
         (hasDelivery ? '<div class="info-card"><span>🚚</span><div><b>' + t('cat.public.delivery') + '</b>' +
-          '<small>' + (Number(b.delivery_fee) > 0 ? t('cat.public.fee') + ': ' + money(b.delivery_fee, b.currency) : '') +
+          '<small>' + (dvModes.length ? dvModes.map(function (m) { return m === 'pickup' ? t('cat.public.pickup') : t('cat.public.deliveryMode'); }).join(' · ') + ' · ' : '') +
+          (Number(b.delivery_fee) > 0 ? t('cat.public.fee') + ': ' + money(b.delivery_fee, b.currency) : '') +
           (b.delivery_time ? ' · ' + esc(b.delivery_time) : '') + (b.delivery_notes ? ' · ' + esc(b.delivery_notes) : '') + '</small></div></div>' : '') +
         (hasPays ? '<div class="info-card"><span>💳</span><div><b>' + t('cat.public.payment') + '</b><small>' + esc((b.payments || []).join(', ')) + '</small></div></div>' : '') +
         '</div></section>';
@@ -149,6 +151,8 @@
     }
     var active = S.filterType !== 'all' || S.filterCat || S.q || S.sort !== 'reco';
     return '<div class="wrap filter-inner">' +
+      '<button type="button" class="btn ghost small filter-toggle" data-ftoggle aria-expanded="false">' + t('cat.public.filters') + '</button>' +
+      '<div class="filter-fields" data-ffields>' +
       '<div class="segmented" data-ftype>' +
         '<button data-ft="all" class="' + (S.filterType === 'all' ? 'active' : '') + '">' + t('common.all') + '</button>' +
         '<button data-ft="product" class="' + (S.filterType === 'product' ? 'active' : '') + '">' + t('cat.public.products') + '</button>' +
@@ -161,10 +165,16 @@
         }).join('') + '</select>' +
       '<input class="search" data-fq placeholder="' + t('cat.public.search') + '" value="' + esc(S.q) + '">' +
       (active ? '<button class="btn ghost small" data-fclear>' + t('cat.public.clear') + '</button>' : '') +
-      '</div>';
+      '</div></div>';
   }
 
   function bindFilters() {
+    var tg = $('[data-ftoggle]');
+    if (tg) tg.addEventListener('click', function () {
+      var ff = $('[data-ffields]');
+      var open = ff.classList.toggle('open');
+      tg.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
     $$('[data-ft]').forEach(function (b) { b.addEventListener('click', function () { S.filterType = b.dataset.ft; S.filterCat = ''; rerenderFilters(); }); });
     var fc = $('[data-fcat]'); if (fc) fc.addEventListener('change', function () { S.filterCat = fc.value; drawGrid(); });
     var so = $('[data-fsort]'); if (so) so.addEventListener('change', function () { S.sort = so.value; drawGrid(); });

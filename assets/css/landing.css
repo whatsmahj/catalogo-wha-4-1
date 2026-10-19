@@ -222,6 +222,21 @@
   .lp-hero { padding-top: 24px; }
 }
 
+/* ==========================================================================
+   Menú móvil de la home
+   ========================================================================== */
+.lp-burger { display: none; background: #fff; border: 1px solid var(--lp-line); border-radius: 12px; width: 42px; height: 42px; font-size: 1.1rem; cursor: pointer; color: var(--lp-ink); }
+.lp-burger:hover { border-color: var(--brand); color: var(--brand); }
+.lp-mobile-menu { display: none; flex-direction: column; gap: 4px; padding: 10px 4vw 16px; background: #fff; border-bottom: 1px solid var(--lp-line); position: sticky; top: 63px; z-index: 55; }
+.lp-mobile-menu a { padding: 12px; border-radius: 12px; font-weight: 600; color: var(--lp-ink); }
+.lp-mobile-menu a:hover { background: var(--lp-bg); color: var(--brand); }
+.lp-mobile-menu .btn { justify-content: center; margin-top: 6px; }
+
+@media (max-width: 720px) {
+  .lp-burger { display: inline-flex; align-items: center; justify-content: center; }
+  .lp-mobile-menu { display: flex; }
+}
+
 /* Ajustes finos para moviles estrechos (390 px) */
 @media (max-width: 480px) {
   .lp-header-inner { gap: 8px; padding: 10px 0; }

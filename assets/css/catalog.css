@@ -115,3 +115,14 @@
 .cat-policies { display: flex; flex-wrap: wrap; gap: 8px 18px; justify-content: center; margin-top: 10px; }
 .cat-policies a { color: var(--muted); font-size: .84rem; }
 .cat-policies a:hover { color: var(--brand); text-decoration: underline; }
+
+/* Barra de filtros: colapsable en móvil */
+.filter-toggle { display: none; }
+.filter-fields { display: contents; }
+
+@media (max-width: 720px) {
+  .filter-toggle { display: inline-flex; width: 100%; justify-content: center; }
+  .filter-fields { display: none; width: 100%; flex-direction: column; gap: 10px; }
+  .filter-fields.open { display: flex; }
+  .filter-fields select, .filter-fields .search, .filter-fields .segmented, .filter-fields .btn { width: 100%; }
+}
