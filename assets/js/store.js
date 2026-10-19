@@ -85,12 +85,18 @@
 
     // ---- Inicialización -------------------------------------------------
     init: function () {
-      if (CW.isDemo) { demoSeed(); return Promise.resolve({ demo: true }); }
-      return loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js')
-        .then(function () {
-          sb = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
-          return { demo: false };
-        });
+      if (store._initPromise) return store._initPromise;
+      if (CW.isDemo) {
+        demoSeed();
+        store._initPromise = Promise.resolve({ demo: true });
+      } else {
+        store._initPromise = loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js')
+          .then(function () {
+            sb = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
+            return { demo: false };
+          });
+      }
+      return store._initPromise;
     },
 
     isDemo: function () { return CW.isDemo; },
@@ -553,6 +559,22 @@
       }
       return sb.from('products').select('id,name,views,business_id').order('views', { ascending: false }).limit(limit)
         .then(function (r) { return r.data || []; }).catch(function () { return []; });
+    },
+
+    // ---- Ajustes globales del sitio (imágenes de la home) ---------------
+    getSiteSettings: function () {
+      if (CW.isDemo) return Promise.resolve(LS.read('site', {}));
+      return sb.from('site_settings').select('*').then(function (r) {
+        if (r.error) throw r.error;
+        var out = {};
+        (r.data || []).forEach(function (row) { out[row.key] = row.value; });
+        return out;
+      }).catch(function () { return {}; });
+    },
+
+    saveSiteSettings: function (key, value) {
+      if (CW.isDemo) { var s = LS.read('site', {}); s[key] = value; LS.write('site', s); return Promise.resolve(); }
+      return sb.from('site_settings').upsert({ key: key, value: value, updated_at: new Date().toISOString() }).then(function (r) { if (r.error) throw r.error; });
     },
 
     // ---- Exportar todos mis datos (JSON) -------------------------------

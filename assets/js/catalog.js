@@ -133,6 +133,14 @@
   function countInCat(catId) { return S.products.filter(function (p) { return p.category_id === catId; }).length; }
 
   function renderFilters() {
+    // Detectamos qué tipos existen realmente en el catálogo.
+    var hasP = S.products.some(function (p) { return p.kind !== 'service'; });
+    var hasS = S.products.some(function (p) { return p.kind === 'service'; });
+    // Si solo hay un tipo, fijamos ese tipo y ocultamos el selector.
+    if (hasP && !hasS && S.filterType === 'service') S.filterType = 'product';
+    if (hasS && !hasP && S.filterType === 'product') S.filterType = 'service';
+    var showTypes = hasP && hasS;
+
     // Una sola lista de categorias, agrupada por tipo y respetando el filtro de tipo.
     var cats = S.cats.filter(function (c) {
       if (S.filterType === 'product') return c.kind !== 'service';
@@ -149,15 +157,15 @@
     } else {
       catOpts += cats.map(opt).join('');
     }
-    var active = S.filterType !== 'all' || S.filterCat || S.q || S.sort !== 'reco';
+    var active = (showTypes && S.filterType !== 'all') || S.filterCat || S.q || S.sort !== 'reco';
     return '<div class="wrap filter-inner">' +
       '<button type="button" class="btn ghost small filter-toggle" data-ftoggle aria-expanded="false">' + t('cat.public.filters') + '</button>' +
       '<div class="filter-fields" data-ffields>' +
-      '<div class="segmented" data-ftype>' +
+      (showTypes ? '<div class="segmented" data-ftype>' +
         '<button data-ft="all" class="' + (S.filterType === 'all' ? 'active' : '') + '">' + t('common.all') + '</button>' +
         '<button data-ft="product" class="' + (S.filterType === 'product' ? 'active' : '') + '">' + t('cat.public.products') + '</button>' +
         '<button data-ft="service" class="' + (S.filterType === 'service' ? 'active' : '') + '">' + t('cat.public.services') + '</button>' +
-      '</div>' +
+      '</div>' : '') +
       (cats.length ? '<select data-fcat aria-label="' + t('common.category') + '">' + catOpts + '</select>' : '') +
       '<select data-fsort aria-label="' + t('cat.public.sort') + '">' +
         ['reco', 'priceasc', 'pricedesc', 'news'].map(function (k) {
@@ -233,39 +241,45 @@
       (inCart ? '<span class="pc-incart">✓ ' + inCart.qty + '</span>' : '') +
       '</div>';
 
-    var priceHtml;
-    if (isService) {
-      priceHtml = Number(p.price) > 0
-        ? '<div class="pc-price"><b>' + money(p.price, S.biz.currency) + '</b></div>'
-        : '<div class="pc-price consult"><b>' + t('cat.public.consult') + '</b></div>';
-    } else if (hasPromo) {
-      priceHtml = '<div class="pc-price"><b>' + money(p.promo_price, S.biz.currency) + '</b><s>' + money(p.price, S.biz.currency) + '</s></div>';
-    } else {
-      priceHtml = '<div class="pc-price"><b>' + money(p.price, S.biz.currency) + '</b></div>';
-    }
-
-    var specs = '';
-    if (isService) {
-      specs = '<div class="pc-specs">' +
-        (p.duration ? '<span>⏱ ' + esc(p.duration) + '</span>' : '') +
-        (p.modality ? '<span>📍 ' + esc(p.modality) + '</span>' : '') +
-        '<span class="ok">✅ ' + t('cat.public.available') + '</span></div>';
-    } else if (hasPromo) {
-      specs = '<div class="pc-specs"><span class="save">🎁 ' + t('cat.public.save') + ' ' + CW.api.pct(p.promo_price, p.price) + '%</span></div>';
-    }
-
     var btn = isService ? (p.bookable ? t('cat.public.book') : t('cat.public.request')) : t('cat.public.add');
+    var actions = '<div class="pc-actions">' +
+      '<button class="btn ' + (isService ? 'soft' : 'primary') + ' small" data-add="' + p.id + '">' + btn + '</button>' +
+      '<button class="btn ghost small" data-detail="' + p.id + '">' + t('cat.public.details') + '</button>' +
+      '<button class="btn ghost small pc-share" data-share="' + p.id + '" aria-label="' + t('common.share') + '" title="' + t('common.share') + '">↗</button>' +
+      '</div>';
 
-    return '<article class="pc ' + (isService ? 'pc--service' : 'pc--product') + '">' +
-      media +
+    // ---- Tarjeta de SERVICIO: pensada para servicios ----
+    if (isService) {
+      var price = Number(p.price) > 0
+        ? '<b>' + money(p.price, S.biz.currency) + '</b>'
+        : '<b class="consult">' + t('cat.public.consult') + '</b>';
+      var specs = '';
+      if (p.duration) specs += '<span class="pc-spec"><i>⏱</i>' + esc(p.duration) + '</span>';
+      if (p.modality) specs += '<span class="pc-spec"><i>📍</i>' + esc(p.modality) + '</span>';
+      return '<article class="pc pc--service">' + media +
+        '<div class="pc-body">' +
+          '<h3 class="pc-name">' + esc(p.name) + '</h3>' +
+          (specs ? '<div class="pc-specs-list">' + specs + '</div>' : '') +
+          '<div class="pc-service-foot">' +
+            '<div class="pc-price">' + price + '</div>' +
+            '<span class="pc-avail">✅ ' + t('cat.public.available') + '</span>' +
+          '</div>' +
+          actions +
+        '</div></article>';
+    }
+
+    // ---- Tarjeta de PRODUCTO ----
+    var priceHtml = hasPromo
+      ? '<div class="pc-price"><b>' + money(p.promo_price, S.biz.currency) + '</b><s>' + money(p.price, S.biz.currency) + '</s></div>'
+      : '<div class="pc-price"><b>' + money(p.price, S.biz.currency) + '</b></div>';
+    var promo = hasPromo
+      ? '<div class="pc-specs"><span class="save">🎁 ' + t('cat.public.save') + ' ' + CW.api.pct(p.promo_price, p.price) + '%</span></div>'
+      : '';
+    return '<article class="pc pc--product">' + media +
       '<div class="pc-body">' +
         '<h3 class="pc-name">' + esc(p.name) + '</h3>' +
-        priceHtml + specs +
-        '<div class="pc-actions">' +
-          '<button class="btn primary small" data-add="' + p.id + '">' + btn + '</button>' +
-          '<button class="btn ghost small" data-detail="' + p.id + '">' + t('cat.public.details') + '</button>' +
-          '<button class="btn ghost small pc-share" data-share="' + p.id + '" aria-label="' + t('common.share') + '" title="' + t('common.share') + '">↗</button>' +
-        '</div>' +
+        priceHtml + promo +
+        actions +
       '</div></article>';
   }
 

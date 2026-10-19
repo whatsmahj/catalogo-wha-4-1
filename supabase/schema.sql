@@ -371,6 +371,22 @@ drop policy if exists "audit write admin" on public.admin_audit;
 create policy "audit write admin" on public.admin_audit
   for insert with check (is_admin());
 
+-- Ajustes globales del sitio (imágenes de la home, etc.) -------------------
+create table if not exists public.site_settings (
+  key        text primary key,
+  value      jsonb default '{}'::jsonb,
+  updated_at timestamptz default now()
+);
+alter table public.site_settings enable row level security;
+
+drop policy if exists "site public read" on public.site_settings;
+create policy "site public read" on public.site_settings
+  for select using (true);
+
+drop policy if exists "site admin write" on public.site_settings;
+create policy "site admin write" on public.site_settings
+  for all using (public.is_admin()) with check (public.is_admin());
+
 -- ---------------------------------------------------------------------------
 -- 5. STORAGE · bucket público "catalog-images"
 -- ---------------------------------------------------------------------------

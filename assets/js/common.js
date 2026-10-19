@@ -382,6 +382,20 @@
       else waf.hidden = true;
     }
 
+    // Imágenes configurables de la home (Administración → Apariencia)
+    var hiEls = document.querySelectorAll('[data-home-img]');
+    if (hiEls.length && CW.store && CW.store.getSiteSettings) {
+      CW.store.init().then(function () { return CW.store.getSiteSettings(); }).then(function (s) {
+        var imgs = (s && s.home_images) || {};
+        hiEls.forEach(function (el) {
+          var u = imgs[el.getAttribute('data-home-img')];
+          if (!u) return;
+          el.style.backgroundImage = 'url("' + u + '")';
+          el.classList.add('has');
+        });
+      }).catch(function () {});
+    }
+
     // Menú móvil de la home
     var burger = document.querySelector('[data-lp-burger]');
     var lpMenu = document.querySelector('[data-lp-menu]');

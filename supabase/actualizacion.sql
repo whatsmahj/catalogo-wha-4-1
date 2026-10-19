@@ -108,3 +108,18 @@ create policy "audit write admin" on public.admin_audit for insert with check (i
 
 -- 7. La biblioteca guarda el tamaño en bytes (para el consumo de plan) -------
 alter table public.library add column if not exists size_bytes bigint default 0;
+
+-- 8. Ajustes globales del sitio (imágenes de la home) ----------------------
+create table if not exists public.site_settings (
+  key        text primary key,
+  value      jsonb default '{}'::jsonb,
+  updated_at timestamptz default now()
+);
+alter table public.site_settings enable row level security;
+
+drop policy if exists "site public read" on public.site_settings;
+create policy "site public read" on public.site_settings for select using (true);
+
+drop policy if exists "site admin write" on public.site_settings;
+create policy "site admin write" on public.site_settings
+  for all using (public.is_admin()) with check (public.is_admin());

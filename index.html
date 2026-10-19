@@ -23,9 +23,9 @@
 <meta name="twitter:title" content="Catalogo Wha">
 <meta name="twitter:description" content="Tu catálogo online con pedidos por WhatsApp.">
 
-<link rel="preload" as="style" href="assets/css/styles.css?v=9">
-<link rel="stylesheet" href="assets/css/styles.css?v=9">
-<link rel="stylesheet" href="assets/css/landing.css?v=5">
+<link rel="preload" as="style" href="assets/css/styles.css?v=10">
+<link rel="stylesheet" href="assets/css/styles.css?v=10">
+<link rel="stylesheet" href="assets/css/landing.css?v=6">
 
 <script type="application/ld+json">
 {
@@ -97,7 +97,7 @@
       <div class="lp-mock">
         <div class="phone">
           <div class="phone-notch"></div>
-          <div class="phone-screen">
+          <div class="phone-screen" data-home-img="hero">
             <div class="mini-hero">
               <div class="mini-logo">M</div>
               <div class="mini-title">Mi negocio</div>
@@ -127,7 +127,7 @@
       <div class="lp-compare">
         <article class="lp-card">
           <span class="lp-tag bad">✕ Sin un catálogo</span>
-          <div class="mock-row"><div class="phone"><div class="phone-screen">
+          <div class="mock-row"><div class="phone"><div class="phone-screen" data-home-img="problem_a">
             <div class="mini-line"></div><div class="mini-line short"></div><div class="mini-line"></div><div class="mini-line short"></div>
           </div></div></div>
           <ul class="lp-list bad">
@@ -138,7 +138,7 @@
         </article>
         <article class="lp-card">
           <span class="lp-tag good">✓ Con tu catálogo</span>
-          <div class="mock-row"><div class="phone"><div class="phone-screen">
+          <div class="mock-row"><div class="phone"><div class="phone-screen" data-home-img="problem_b">
             <div class="mini-grid"><div class="mini-card"><div class="mini-img"></div><div class="mini-line"></div></div><div class="mini-card"><div class="mini-img alt"></div><div class="mini-line"></div></div></div>
             <div class="mini-wa">🟢 Pedido listo</div>
           </div></div></div>
@@ -159,9 +159,9 @@
       <h2 class="lp-h2" data-i18n="landing.value.title">Todo lo que necesitas para vender</h2>
       <p class="lp-sub">Muestra tus artículos y recibe pedidos por WhatsApp. No necesitas programar ni contratar a nadie para tener tu catálogo listo.</p>
       <div class="lp-cards3">
-        <article class="lp-card"><div class="lp-icon">🔗</div><h3 data-i18n="landing.value.1">Listo en minutos</h3><p data-i18n="landing.value.1.desc">Sin instalar nada, sin tarjetas, sin complicaciones.</p></article>
-        <article class="lp-card"><div class="lp-icon">💸</div><h3 data-i18n="landing.value.2">Sin comisiones</h3><p data-i18n="landing.value.2.desc">Tú decides cómo cobrar. El pedido llega a tu WhatsApp.</p></article>
-        <article class="lp-card"><div class="lp-icon">🌍</div><h3 data-i18n="landing.value.3">En 3 idiomas</h3><p data-i18n="landing.value.3.desc">Español, francés y árabe con diseño adaptado.</p></article>
+        <article class="lp-card"><div class="lp-thumb" data-home-img="value_1"></div><div class="lp-icon">🔗</div><h3 data-i18n="landing.value.1">Listo en minutos</h3><p data-i18n="landing.value.1.desc">Sin instalar nada, sin tarjetas, sin complicaciones.</p></article>
+        <article class="lp-card"><div class="lp-thumb" data-home-img="value_2"></div><div class="lp-icon">💸</div><h3 data-i18n="landing.value.2">Sin comisiones</h3><p data-i18n="landing.value.2.desc">Tú decides cómo cobrar. El pedido llega a tu WhatsApp.</p></article>
+        <article class="lp-card"><div class="lp-thumb" data-home-img="value_3"></div><div class="lp-icon">🌍</div><h3 data-i18n="landing.value.3">En 3 idiomas</h3><p data-i18n="landing.value.3.desc">Español, francés y árabe con diseño adaptado.</p></article>
       </div>
     </div>
   </section>
@@ -205,7 +205,7 @@
       <div class="lp-mock">
         <div class="phone">
           <div class="phone-notch"></div>
-          <div class="phone-screen">
+          <div class="phone-screen" data-home-img="split_1">
             <div class="mini-hero"><div class="mini-logo">M</div><div class="mini-title">Mi negocio</div></div>
             <div class="mini-grid">
               <div class="mini-card"><div class="mini-img"></div><div class="mini-line"></div></div>
@@ -251,7 +251,7 @@
       <div class="lp-mock">
         <div class="phone">
           <div class="phone-notch"></div>
-          <div class="phone-screen" style="background:linear-gradient(160deg,#2a1140,#5B1A80)">
+          <div class="phone-screen" data-home-img="split_2" style="background:linear-gradient(160deg,#2a1140,#5B1A80)">
             <div style="color:#fff;font-weight:800;font-size:.9rem;margin-bottom:10px">Pedidos</div>
             <div class="mini-card" style="margin-bottom:8px"><div class="mini-line"></div><div class="mini-line short"></div></div>
             <div class="mini-card" style="margin-bottom:8px"><div class="mini-line"></div><div class="mini-line short"></div></div>
@@ -361,11 +361,11 @@
       <h2 class="lp-h2">Mira lo que puedes crear</h2>
       <p class="lp-sub">Ejemplos de catálogos por rubro para que veas cómo se organizan productos, categorías y pedidos.</p>
       <div class="lp-templates">
-        <div class="lp-tpl"><div class="cap t1"></div><div class="body"><b>Moda</b><small>ropa.tudominio.com</small><a href="catalogo.html?b=demo">Crear uno similar</a></div></div>
-        <div class="lp-tpl"><div class="cap t2"></div><div class="body"><b>Abarrotes</b><small>abarrotes.tudominio.com</small><a href="catalogo.html?b=demo">Crear uno similar</a></div></div>
-        <div class="lp-tpl"><div class="cap t3"></div><div class="body"><b>Ferretería</b><small>ferreteria.tudominio.com</small><a href="catalogo.html?b=demo">Crear uno similar</a></div></div>
-        <div class="lp-tpl"><div class="cap t4"></div><div class="body"><b>Belleza</b><small>belleza.tudominio.com</small><a href="catalogo.html?b=demo">Crear uno similar</a></div></div>
-        <div class="lp-tpl"><div class="cap t5"></div><div class="body"><b>Servicios</b><small>servicios.tudominio.com</small><a href="catalogo.html?b=demo">Crear uno similar</a></div></div>
+        <div class="lp-tpl"><div class="cap t1" data-home-img="tpl_1"></div><div class="body"><b>Moda</b><small>ropa.tudominio.com</small><a href="catalogo.html?b=demo">Crear uno similar</a></div></div>
+        <div class="lp-tpl"><div class="cap t2" data-home-img="tpl_2"></div><div class="body"><b>Abarrotes</b><small>abarrotes.tudominio.com</small><a href="catalogo.html?b=demo">Crear uno similar</a></div></div>
+        <div class="lp-tpl"><div class="cap t3" data-home-img="tpl_3"></div><div class="body"><b>Ferretería</b><small>ferreteria.tudominio.com</small><a href="catalogo.html?b=demo">Crear uno similar</a></div></div>
+        <div class="lp-tpl"><div class="cap t4" data-home-img="tpl_4"></div><div class="body"><b>Belleza</b><small>belleza.tudominio.com</small><a href="catalogo.html?b=demo">Crear uno similar</a></div></div>
+        <div class="lp-tpl"><div class="cap t5" data-home-img="tpl_5"></div><div class="body"><b>Servicios</b><small>servicios.tudominio.com</small><a href="catalogo.html?b=demo">Crear uno similar</a></div></div>
       </div>
     </div>
   </section>
@@ -437,10 +437,10 @@
 </div>
 
 <script>document.querySelectorAll('[data-year]').forEach(function(e){e.textContent=new Date().getFullYear();});</script>
-<script defer src="assets/js/config.js?v=9"></script>
-<script defer src="assets/js/i18n.js?v=9"></script>
-<script defer src="assets/js/store.js?v=9"></script>
-<script defer src="assets/js/common.js?v=9"></script>
-<script defer src="assets/js/policies.js?v=5"></script>
+<script defer src="assets/js/config.js?v=10"></script>
+<script defer src="assets/js/i18n.js?v=10"></script>
+<script defer src="assets/js/store.js?v=10"></script>
+<script defer src="assets/js/common.js?v=10"></script>
+<script defer src="assets/js/policies.js?v=6"></script>
 </body>
 </html>

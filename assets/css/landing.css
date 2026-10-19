@@ -223,7 +223,18 @@
 }
 
 /* ==========================================================================
-   Menú móvil de la home
+   Imágenes configurables de la home
+   ========================================================================== */
+.lp-thumb { display: none; }
+.lp-thumb.has {
+  display: block; height: 132px; border-radius: 14px;
+  background-size: cover; background-position: center; margin-bottom: 14px;
+}
+.phone-screen.has { background-size: cover !important; background-position: center !important; }
+.phone-screen.has > * { display: none !important; }
+.cap.has { background-size: cover !important; background-position: center !important; }
+
+/* Menú móvil de la home
    ========================================================================== */
 .lp-burger { display: none; background: #fff; border: 1px solid var(--lp-line); border-radius: 12px; width: 42px; height: 42px; font-size: 1.1rem; cursor: pointer; color: var(--lp-ink); }
 .lp-burger:hover { border-color: var(--brand); color: var(--brand); }

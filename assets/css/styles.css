@@ -467,6 +467,14 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 .len-badge.ok::before { content: '●'; margin-inline-end: 5px; font-size: .8em; }
 .len-badge.short::before, .len-badge.long::before { content: '●'; margin-inline-end: 5px; font-size: .8em; }
 
+/* Imágenes de la home (Administración → Apariencia) */
+.home-img-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+.hi-item { display: flex; flex-direction: column; gap: 6px; }
+.hi-thumb { position: relative; aspect-ratio: 4/3; border: 2px dashed var(--line-2); border-radius: 12px; display: grid; place-items: center; overflow: hidden; cursor: pointer; color: var(--muted); background: var(--bg); }
+.hi-thumb.has { border-style: solid; border-color: var(--brand-soft); }
+.hi-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.hi-item small { font-size: .78rem; color: var(--ink-2); font-weight: 600; }
+
 @media (max-width: 1000px) {
   .set-two { grid-template-columns: 1fr; }
   .opt-modes { padding-inline-start: 0; }

@@ -159,7 +159,7 @@
 
       // Admin
       'adm.title': 'Administración', 'adm.sub': 'Gestiona todas las cuentas y la cobertura de usuarios y negocios.',
-      'adm.accounts': 'Cuentas', 'adm.metrics': 'Métricas', 'adm.coverage': 'Cobertura',
+      'adm.accounts': 'Cuentas', 'adm.metrics': 'Métricas', 'adm.coverage': 'Cobertura', 'adm.appearance': 'Apariencia',
       'adm.owner': 'Propietario', 'adm.state': 'Estado', 'adm.published': 'Publicado', 'adm.hidden': 'Oculto',
       'adm.publish': 'Publicar', 'adm.hide': 'Ocultar', 'adm.detail': 'Detalle',
       'adm.members': 'Colaboradores con acceso', 'adm.member.add': 'Dar cobertura a un usuario',
@@ -394,7 +394,7 @@
       'acc.newpass': 'Nouveau mot de passe',
 
       'adm.title': 'Administration', 'adm.sub': 'Gérez les comptes et la couverture des utilisateurs et commerces.',
-      'adm.accounts': 'Comptes', 'adm.metrics': 'Métriques', 'adm.coverage': 'Couverture',
+      'adm.accounts': 'Comptes', 'adm.metrics': 'Métriques', 'adm.coverage': 'Couverture', 'adm.appearance': 'Apparence',
       'adm.owner': 'Propriétaire', 'adm.state': 'État', 'adm.published': 'Publié', 'adm.hidden': 'Masqué',
       'adm.publish': 'Publier', 'adm.hide': 'Masquer', 'adm.detail': 'Détail',
       'adm.members': 'Collaborateurs', 'adm.member.add': 'Donner accès à un utilisateur',
@@ -593,7 +593,7 @@
       'acc.delete.hint': 'اكتب حذف للتأكيد.', 'acc.newpass': 'كلمة مرور جديدة',
 
       'adm.title': 'الإدارة', 'adm.sub': 'أدر الحسابات وتغطية المستخدمين والمتاجر.', 'adm.accounts': 'الحسابات',
-      'adm.metrics': 'المقاييس', 'adm.coverage': 'التغطية', 'adm.owner': 'المالك', 'adm.state': 'الحالة',
+      'adm.metrics': 'المقاييس', 'adm.coverage': 'التغطية', 'adm.appearance': 'المظهر', 'adm.owner': 'المالك', 'adm.state': 'الحالة',
       'adm.published': 'منشور', 'adm.hidden': 'مخفي', 'adm.publish': 'نشر', 'adm.hide': 'إخفاء',
       'adm.detail': 'تفاصيل', 'adm.members': 'المتعاونون', 'adm.member.add': 'منح التغطية لمستخدم',
       'adm.member.email': 'بريد المستخدم', 'adm.member.role': 'الدور', 'adm.member.support': 'دعم (قراءة فقط)',

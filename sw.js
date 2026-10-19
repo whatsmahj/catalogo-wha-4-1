@@ -1,7 +1,7 @@
 /* Catalogo Wha · Service Worker
    Versión de caché única; solo se consulta la caché actual para no servir
    archivos antiguos. HTML network-first, estáticos cache-first. */
-const CACHE_VERSION = 'cw-v9';
+const CACHE_VERSION = 'cw-v10';
 const CACHE_NAME = 'catalogo-wha-' + CACHE_VERSION;
 
 const PRECACHE = [
@@ -11,20 +11,20 @@ const PRECACHE = [
   './dashboard.html',
   './catalogo.html',
   './manifest.webmanifest',
-  './assets/css/styles.css?v=9',
-  './assets/css/landing.css?v=5',
-  './assets/css/catalog.css?v=5',
-  './assets/css/assistant.css?v=5',
-  './assets/js/config.js?v=9',
-  './assets/js/i18n.js?v=9',
-  './assets/js/store.js?v=9',
-  './assets/js/panel-i18n.js?v=3',
-  './assets/js/common.js?v=9',
-  './assets/js/policies.js?v=5',
-  './assets/js/auth.js?v=9',
-  './assets/js/dashboard.js?v=9',
-  './assets/js/catalog.js?v=9',
-  './assets/js/assistant.js?v=5'
+  './assets/css/styles.css?v=10',
+  './assets/css/landing.css?v=6',
+  './assets/css/catalog.css?v=6',
+  './assets/css/assistant.css?v=6',
+  './assets/js/config.js?v=10',
+  './assets/js/i18n.js?v=10',
+  './assets/js/store.js?v=10',
+  './assets/js/panel-i18n.js?v=4',
+  './assets/js/common.js?v=10',
+  './assets/js/policies.js?v=6',
+  './assets/js/auth.js?v=10',
+  './assets/js/dashboard.js?v=10',
+  './assets/js/catalog.js?v=10',
+  './assets/js/assistant.js?v=6'
 ];
 
 self.addEventListener('install', (e) => {

@@ -22,6 +22,22 @@
     seo: ['SEO y compartir', 'Mejora cómo se presenta tu catálogo en buscadores y cuando compartes tu enlace. Tú eliges el contenido; nosotros nos encargamos de las etiquetas técnicas.']
   };
 
+  var HOME_IMAGES = [
+    { key: 'hero', label: 'Hero · móvil principal' },
+    { key: 'problem_a', label: 'Problema · sin catálogo' },
+    { key: 'problem_b', label: 'Problema · con catálogo' },
+    { key: 'value_1', label: 'Valor 1' },
+    { key: 'value_2', label: 'Valor 2' },
+    { key: 'value_3', label: 'Valor 3' },
+    { key: 'split_1', label: 'Bloque · experiencia del cliente' },
+    { key: 'split_2', label: 'Bloque · control del negocio' },
+    { key: 'tpl_1', label: 'Plantilla 1' },
+    { key: 'tpl_2', label: 'Plantilla 2' },
+    { key: 'tpl_3', label: 'Plantilla 3' },
+    { key: 'tpl_4', label: 'Plantilla 4' },
+    { key: 'tpl_5', label: 'Plantilla 5' }
+  ];
+
   var state = {
     session: null, biz: null, isAdmin: false,
     cats: [], products: [], orders: [], library: [],
@@ -1137,16 +1153,17 @@
   // ADMINISTRACIÓN + COBERTURA
   // ---------------------------------------------------------------------
   function renderAdmin(view) {
-    var tabs = ['accounts', 'coverage', 'metrics', 'superadmins', 'audit'];
+    var tabs = ['accounts', 'coverage', 'appearance', 'metrics', 'superadmins', 'audit'];
+    var TAB_LABEL = { accounts: 'adm.accounts', coverage: 'adm.coverage', appearance: 'adm.appearance', metrics: 'adm.metrics', superadmins: 'adm.superadmins', audit: 'adm.audit' };
     view.innerHTML = '<div class="view-head"><div><h1>🛡️ ' + t('adm.title') + '</h1><p class="muted">' + t('adm.sub') + '</p></div></div>' +
       '<div class="segmented tabs" data-atab>' + tabs.map(function (x) {
-        return '<button data-at="' + x + '" class="' + (x === 'accounts' ? 'active' : '') + '">' +
-          t('adm.' + (x === 'accounts' ? 'accounts' : x === 'coverage' ? 'coverage' : x === 'metrics' ? 'metrics' : x === 'superadmins' ? 'superadmins' : 'audit')) + '</button>';
+        return '<button data-at="' + x + '" class="' + (x === 'accounts' ? 'active' : '') + '">' + t(TAB_LABEL[x]) + '</button>';
       }).join('') + '</div><div data-admin-body></div>';
     function draw(tab) {
       var body = $('[data-admin-body]', view);
       if (tab === 'accounts') return adminAccounts(body);
       if (tab === 'coverage') return adminCoverage(body);
+      if (tab === 'appearance') return adminAppearance(body);
       if (tab === 'metrics') return adminMetrics(body);
       if (tab === 'superadmins') return adminSuperadmins(body);
       if (tab === 'audit') return adminAudit(body);
@@ -1257,6 +1274,53 @@
       $$('[data-cov-open]', body).forEach(function (x) {
         x.addEventListener('click', function () { adminBusinessDetail(list.find(function (y) { return y.id === x.dataset.covOpen; })); });
       });
+    });
+  }
+
+  // Pestaña de apariencia: imágenes de la home
+  function adminAppearance(body) {
+    body.innerHTML = '<section class="card"><div class="card-head"><div><h3>Imágenes de la home</h3>' +
+      '<p class="muted">Sube o cambia las imágenes de cada sección de la página de inicio. Se aplican al guardar.</p></div>' +
+      '<button class="btn primary small" data-hi-save>Guardar</button></div>' +
+      '<div class="home-img-grid" data-hi-grid><p class="muted">' + t('common.loading') + '</p></div></section>';
+
+    CW.store.getSiteSettings().then(function (s) {
+      body._imgs = Object.assign({}, (s && s.home_images) || {});
+      drawGrid();
+    });
+
+    function drawGrid() {
+      var imgs = body._imgs;
+      $('[data-hi-grid]', body).innerHTML = HOME_IMAGES.map(function (slot) {
+        var url = imgs[slot.key] || '';
+        return '<div class="hi-item"><div class="hi-thumb ' + (url ? 'has' : '') + '" data-hi-pick="' + slot.key + '">' +
+          (url ? '<img src="' + esc(url) + '">' : '<span>+</span>') + '</div>' +
+          '<small>' + esc(slot.label) + '</small>' +
+          (url ? '<button class="btn ghost small danger" data-hi-del="' + slot.key + '">Quitar</button>' : '') +
+          '</div>';
+      }).join('');
+      $$('[data-hi-pick]', body).forEach(function (el) {
+        el.addEventListener('click', function () {
+          openImagePicker(1, function (u) {
+            if (!u[0]) return;
+            body._imgs[el.dataset.hiPick] = u[0];
+            drawGrid();
+          });
+        });
+      });
+      $$('[data-hi-del]', body).forEach(function (b) {
+        b.addEventListener('click', function (e) {
+          e.stopPropagation();
+          delete body._imgs[b.dataset.hiDel];
+          drawGrid();
+        });
+      });
+    }
+
+    $('[data-hi-save]', body).addEventListener('click', function () {
+      CW.store.saveSiteSettings('home_images', body._imgs).then(function () {
+        CW.toast(t('common.save'));
+      }).catch(function () { CW.toast('No se pudo guardar (¿ejecutaste actualizacion.sql?)'); });
     });
   }
 

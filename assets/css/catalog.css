@@ -66,6 +66,35 @@
 /* Distintivo sutil para servicios */
 .pc--service .pc-name { position: relative; }
 
+/* ==========================================================================
+   Tarjeta de SERVICIO: disposición propia (duración, modalidad, reserva)
+   ========================================================================== */
+.pc--service { border-color: #e2d4f5; }
+.pc--service .pc-body { background: linear-gradient(180deg, #faf7fe, #fff 42%); }
+.pc--service .pc-name { font-size: 1.06rem; margin-bottom: 10px; }
+
+.pc-specs-list { display: flex; flex-direction: column; gap: 7px; margin: 0 0 14px; }
+.pc-spec { display: flex; align-items: center; gap: 9px; font-size: .86rem; color: var(--ink-2); }
+.pc-spec i {
+  font-style: normal; width: 24px; height: 24px; border-radius: 8px;
+  background: var(--brand-soft); color: var(--brand);
+  display: grid; place-items: center; font-size: .78rem; flex: 0 0 auto;
+}
+
+.pc-service-foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding-top: 11px; margin: 0 0 13px; border-top: 1px dashed var(--line-2);
+}
+.pc-service-foot .pc-price { margin: 0; }
+.pc-service-foot .pc-price b { font-size: 1.05rem; color: var(--brand); }
+.pc-service-foot .pc-price b.consult { font-size: .92rem; }
+.pc-avail {
+  font-size: .74rem; font-weight: 800; color: #14804a;
+  background: #e7f8ef; border-radius: 999px; padding: 4px 10px; white-space: nowrap;
+}
+.pc--service .pc-actions .btn.soft { background: var(--brand-soft); color: var(--brand); border-color: transparent; }
+.pc--service .pc-actions .btn.soft:hover { background: #e9dcf8; }
+
 /* En pantallas muy pequeñas, acciones apiladas */
 @media (max-width: 380px) {
   .pc-actions { flex-direction: column; }
